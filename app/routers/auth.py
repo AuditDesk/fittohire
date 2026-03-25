@@ -109,10 +109,11 @@ async def login_page(request: Request, next: str = "/dashboard"):
         return RedirectResponse(
             "/employer/dashboard" if user["role"] == "employer" else "/dashboard"
         )
-    return templates.TemplateResponse("auth/login.html", {
-        "request": request,
-        "next": next,
-    })
+    return templates.TemplateResponse(
+        request=request,
+        name="auth/login.html",
+        context={"next": next},
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -164,10 +165,11 @@ async def auth_callback(
     extraction in the frontend JS and POST it back via /auth/set-session.
     This route just serves the callback HTML page.
     """
-    return templates.TemplateResponse("auth/callback.html", {
-        "request": request,
-        "role": role,
-    })
+    return templates.TemplateResponse(
+        request=request,
+        name="auth/callback.html",
+        context={"role": role},
+    )
 
 
 @router.post("/set-session")
