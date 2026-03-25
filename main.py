@@ -1,12 +1,20 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
+from fastapi.templating import Jinja2Templates
 import os
 
 app = FastAPI()
 
+# Static files (CSS, JS, images)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+# Register routers
+from app.routers import auth, payments
+app.include_router(auth.router)
+app.include_router(payments.router)
+
+# Existing pages
 @app.get("/")
 async def home():
     return FileResponse("static/index.html")
