@@ -12,6 +12,7 @@ Flow:
 
 import os
 import logging
+from pathlib import Path
 from typing import Optional
 
 from fastapi import APIRouter, Request, Response, HTTPException, Depends
@@ -22,7 +23,10 @@ from supabase import create_client, Client
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/auth", tags=["auth"])
-templates = Jinja2Templates(directory="app/templates")
+
+# Absolute path — works regardless of where uvicorn is launched from
+BASE_DIR = Path(__file__).resolve().parent.parent  # → /app/app
+templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_SERVICE_KEY = os.getenv("SUPABASE_SERVICE_KEY")
