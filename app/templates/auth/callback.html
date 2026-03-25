@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Signing you in — FitToHire</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f9fafb;
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .box {
+      text-align: center;
+      padding: 2rem;
+    }
+    .spinner {
+      width: 40px; height: 40px;
+      border: 3px solid #e5e7eb;
+      border-top-color: #1D9E75;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin: 0 auto 1.25rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    h2 { font-size: 18px; font-weight: 600; color: #1a1a1a; margin-bottom: 6px; }
+    p  { font-size: 14px; color: #6b7280; }
+    .error { display: none; margin-top: 1rem; }
+    .error h2 { color: #dc2626; }
+    .error a { color: #1D9E75; }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <div class="spinner" id="spinner"></div>
+  <h2 id="msg">Signing you in…</h2>
+  <p id="sub">Please wait a moment.</p>
+
+  <div class="error" id="error-box">
+    <h2>Link expired or invalid</h2>
+    <p>Magic links expire after 60 minutes.<br>
+    <a href="/auth/login">Request a new link</a></p>
+  </div>
+</div>
+
+<script>
+  // Supabase returns tokens as URL fragment: #access_token=...&refresh_token=...
+  // Fragments are never sent to the server, so we extract here and POST to our API.
+  (async function() {
+    const role = new URLSearchParams(window.location.search).get('role') || 'job_seeker';
+    const hash = window.location.hash.substring(1);
+    const params = new URLSearchParams(hash);
+
+    const accessToken  = params.get('access_token');
+    const refreshToken = params.get('refresh_token');
+    const type         = params.get('type'); // 'magiclink' or 'recovery'
+
+    if (!accessToken) {
+      document.getElementById('spinner').style.display = 'none';
+      document.getElementById('msg').style.display = 'none';
+      document.getElementById('sub').style.display = 'none';
+      document.getElementById('error-box').style.display = 'block';
+      return;
+    }
+
+    try {
+      const res = await fetch('/auth/set-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_token:  accessToken,
+          refresh_token: refreshToken,
+          role:          role,
+        })
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.redirect) {
+        document.getElementById('msg').textContent = 'All set! Redirecting…';
+        window.location.href = data.redirect;
+      } else {
+        throw new Error('Session setup failed');
+      }
+
+    } catch (err) {
+      document.getElementById('spinner').style.display = 'none';
+      document.getElementById('msg').style.display = 'none';
+      document.getElementById('sub').style.display = 'none';
+      document.getElementById('error-box').style.display = 'block';
+    }
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign in — FitToHire</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green:      #1D9E75;
+      --green-dark: #0F6E56;
+      --green-bg:   #E1F5EE;
+      --text:       #1a1a1a;
+      --muted:      #6b7280;
+      --border:     #e5e7eb;
+      --bg:         #f9fafb;
+      --white:      #ffffff;
+      --red:        #dc2626;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2.5rem 2rem;
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 2rem;
+    }
+    .logo-mark {
+      width: 36px; height: 36px;
+      background: var(--green);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo-mark svg { width: 20px; height: 20px; fill: white; }
+    .logo-text { font-size: 18px; font-weight: 600; color: var(--text); }
+    .logo-text span { color: var(--green); }
+
+    h1 {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .subtitle {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 1.75rem;
+      line-height: 1.5;
+    }
+
+    /* Role toggle */
+    .role-toggle {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 1.5rem;
+    }
+    .role-btn {
+      padding: 10px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      background: var(--white);
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+    }
+    .role-btn:hover { border-color: var(--green); }
+    .role-btn.active {
+      border-color: var(--green);
+      background: var(--green-bg);
+    }
+    .role-btn .role-icon {
+      font-size: 22px;
+      margin-bottom: 4px;
+      display: block;
+    }
+    .role-btn .role-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      display: block;
+    }
+    .role-btn .role-desc {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+      display: block;
+    }
+    .role-btn.active .role-label { color: var(--green-dark); }
+
+    /* Form */
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    input[type="email"] {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 15px;
+      color: var(--text);
+      background: var(--white);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    input[type="email"]:focus { border-color: var(--green); }
+    input[type="email"]::placeholder { color: #9ca3af; }
+
+    .submit-btn {
+      width: 100%;
+      padding: 12px;
+      margin-top: 1rem;
+      background: var(--green);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s, opacity 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .submit-btn:hover { background: var(--green-dark); }
+    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Success state */
+    .success-box {
+      display: none;
+      text-align: center;
+      padding: 1rem 0;
+    }
+    .success-icon {
+      width: 52px; height: 52px;
+      background: var(--green-bg);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1rem;
+    }
+    .success-icon svg { width: 24px; height: 24px; stroke: var(--green); fill: none; stroke-width: 2.5; }
+    .success-title {
+      font-size: 17px; font-weight: 600;
+      color: var(--text); margin-bottom: 6px;
+    }
+    .success-sub {
+      font-size: 14px; color: var(--muted);
+      line-height: 1.6;
+    }
+    .success-email {
+      font-weight: 500; color: var(--text);
+    }
+    .resend-btn {
+      margin-top: 1.25rem;
+      background: none; border: none;
+      color: var(--green); font-size: 14px;
+      cursor: pointer; text-decoration: underline;
+    }
+
+    /* Error */
+    .error-msg {
+      display: none;
+      font-size: 13px;
+      color: var(--red);
+      margin-top: 8px;
+      padding: 8px 12px;
+      background: #fef2f2;
+      border-radius: 8px;
+      border: 1px solid #fecaca;
+    }
+
+    .divider {
+      height: 1px; background: var(--border);
+      margin: 1.5rem 0;
+    }
+    .footer-note {
+      font-size: 12px;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.6;
+    }
+    .footer-note a { color: var(--green); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <div class="logo">
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" stroke="white" stroke-width="2" fill="none"/></svg>
+    </div>
+    <span class="logo-text">Fit<span>To</span>Hire</span>
+  </div>
+
+  <!-- Form section -->
+  <div id="form-section">
+    <h1>Welcome</h1>
+    <p class="subtitle">Sign in or create your account — we'll send a magic link to your email. No password needed.</p>
+
+    <!-- Role selector -->
+    <div class="role-toggle">
+      <button class="role-btn active" onclick="setRole('job_seeker', this)" id="btn-js">
+        <span class="role-icon">🎯</span>
+        <span class="role-label">Job seeker</span>
+        <span class="role-desc">Practice interviews · get hired</span>
+      </button>
+      <button class="role-btn" onclick="setRole('employer', this)" id="btn-emp">
+        <span class="role-icon">🏢</span>
+        <span class="role-label">Employer</span>
+        <span class="role-desc">Post jobs · find talent</span>
+      </button>
+    </div>
+
+    <!-- Email input -->
+    <label for="email">Email address</label>
+    <input
+      type="email"
+      id="email"
+      placeholder="you@example.com"
+      autocomplete="email"
+      onkeydown="if(event.key==='Enter') submitForm()"
+    >
+    <div class="error-msg" id="error-msg"></div>
+
+    <button class="submit-btn" id="submit-btn" onclick="submitForm()">
+      <span id="btn-text">Send magic link</span>
+      <div class="spinner" id="spinner"></div>
+    </button>
+  </div>
+
+  <!-- Success section (shown after OTP sent) -->
+  <div class="success-box" id="success-box">
+    <div class="success-icon">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <div class="success-title">Check your inbox</div>
+    <div class="success-sub">
+      We sent a magic link to<br>
+      <span class="success-email" id="sent-email"></span>
+    </div>
+    <div class="success-sub" style="margin-top:10px;font-size:13px;">
+      Click the link in the email to sign in.<br>
+      Link expires in 60 minutes.
+    </div>
+    <button class="resend-btn" onclick="resetForm()">Use a different email</button>
+  </div>
+
+  <div class="divider"></div>
+  <div class="footer-note">
+    By continuing, you agree to our
+    <a href="/terms">Terms</a> and <a href="/privacy">Privacy Policy</a>.
+  </div>
+</div>
+
+<script>
+  let selectedRole = 'job_seeker';
+
+  function setRole(role, el) {
+    selectedRole = role;
+    document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  async function submitForm() {
+    const email = document.getElementById('email').value.trim();
+    const errorEl = document.getElementById('error-msg');
+
+    // Basic validation
+    errorEl.style.display = 'none';
+    if (!email) {
+      showError('Please enter your email address.');
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      showError('Please enter a valid email address.');
+      return;
+    }
+
+    // Loading state
+    setLoading(true);
+
+    try {
+      const res = await fetch('/auth/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, role: selectedRole })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        showError(data.detail || 'Something went wrong. Please try again.');
+        setLoading(false);
+        return;
+      }
+
+      // Show success
+      document.getElementById('sent-email').textContent = email;
+      document.getElementById('form-section').style.display = 'none';
+      document.getElementById('success-box').style.display = 'block';
+
+    } catch (err) {
+      showError('Network error. Please check your connection and try again.');
+      setLoading(false);
+    }
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('error-msg');
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+
+  function setLoading(on) {
+    const btn = document.getElementById('submit-btn');
+    const txt = document.getElementById('btn-text');
+    const sp  = document.getElementById('spinner');
+    btn.disabled = on;
+    txt.textContent = on ? 'Sending…' : 'Send magic link';
+    sp.style.display = on ? 'block' : 'none';
+  }
+
+  function resetForm() {
+    document.getElementById('form-section').style.display = 'block';
+    document.getElementById('success-box').style.display = 'none';
+    document.getElementById('email').value = '';
+    setLoading(false);
+  }
+</script>
+
+</body>
+</html>
