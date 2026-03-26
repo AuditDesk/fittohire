@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interview in Progress — FitToHire</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    :root{--green:#16A34A;--green-light:#F0FDF4;--border:#E5E7EB;--text:#111827;--muted:#6B7280;--white:#fff;--red:#EF4444}
+    body{font-family:'DM Sans',sans-serif;background:#F9FAFB;color:var(--text);min-height:100vh}
+    nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 1.5rem;height:56px;display:flex;align-items:center;justify-content:space-between}
+    .brand-fit{color:#2563EB;font-weight:600}.brand-to{color:#6B7280;font-weight:600}.brand-hire{color:#16A34A;font-weight:600}
+    .progress-bar{flex:1;max-width:300px;height:6px;background:#E5E7EB;border-radius:99px;margin:0 1.5rem;overflow:hidden}
+    .progress-fill{height:100%;background:var(--green);border-radius:99px;transition:width .4s ease}
+    .progress-label{font-size:13px;color:var(--muted);white-space:nowrap}
+    .page{max-width:680px;margin:0 auto;padding:2rem 1.5rem}
+    .q-num{font-size:12px;font-weight:500;color:var(--green);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+    .question{font-size:20px;font-weight:500;line-height:1.5;margin-bottom:1.5rem;color:var(--text)}
+    .answer-area{width:100%;min-height:160px;padding:14px;border:1.5px solid var(--border);border-radius:12px;font-size:15px;font-family:'DM Sans',sans-serif;resize:vertical;outline:none;transition:border-color .15s;line-height:1.6}
+    .answer-area:focus{border-color:var(--green)}
+    .controls{display:flex;align-items:center;justify-content:space-between;margin-top:1rem;gap:12px;flex-wrap:wrap}
+    .voice-btn{display:flex;align-items:center;gap:8px;padding:10px 18px;border:1.5px solid var(--border);border-radius:10px;background:var(--white);font-size:13px;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif}
+    .voice-btn:hover{border-color:var(--green);color:var(--green)}
+    .voice-btn.recording{border-color:var(--red);color:var(--red);animation:pulse 1s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+    .voice-dot{width:8px;height:8px;border-radius:50%;background:currentColor}
+    .submit-btn{padding:12px 28px;background:var(--green);color:white;border:none;border-radius:10px;font-size:15px;font-weight:500;cursor:pointer;transition:background .15s;font-family:'DM Sans',sans-serif}
+    .submit-btn:hover{background:#15803D}
+    .submit-btn:disabled{background:#D1FAE5;cursor:not-allowed}
+    .char-count{font-size:12px;color:var(--muted)}
+    .saving{font-size:12px;color:var(--green);display:none}
+    .tip-box{background:var(--green-light);border-left:3px solid var(--green);border-radius:0 8px 8px 0;padding:10px 14px;margin-bottom:1.5rem;font-size:13px;color:#166534;line-height:1.5}
+    .scoring-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;align-items:center;justify-content:center}
+    .scoring-overlay.show{display:flex}
+    .scoring-card{background:var(--white);border-radius:16px;padding:2.5rem;text-align:center;max-width:360px;width:90%}
+    .scoring-spinner{width:48px;height:48px;border:3px solid #E5E7EB;border-top-color:var(--green);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 1.25rem}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .scoring-title{font-size:18px;font-weight:600;margin-bottom:6px}
+    .scoring-sub{font-size:14px;color:var(--muted)}
+  </style>
+</head>
+<body>
+<nav>
+  <span style="font-size:16px;font-weight:600"><span class="brand-fit">Fit</span><span class="brand-to">To</span><span class="brand-hire">Hire</span></span>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:10%"></div></div>
+  <span class="progress-label" id="progress-label">Question 1 of 10</span>
+</nav>
+
+<div class="page">
+  <div class="tip-box" id="tip-box">💡 Tip: Use the STAR method — Situation, Task, Action, Result — for behavioural questions.</div>
+  <div class="q-num" id="q-num">Question 1 of 10</div>
+  <div class="question" id="question-text">Loading question...</div>
+
+  <textarea class="answer-area" id="answer" placeholder="Type your answer here, or click the microphone to speak..." oninput="updateCount()"></textarea>
+
+  <div class="controls">
+    <div style="display:flex;align-items:center;gap:12px">
+      <button class="voice-btn" id="voice-btn" onclick="toggleVoice()">
+        <span class="voice-dot"></span>
+        <span id="voice-label">Speak answer</span>
+      </button>
+      <span class="char-count" id="char-count">0 characters</span>
+      <span class="saving" id="saving-indicator">Saving...</span>
+    </div>
+    <button class="submit-btn" id="submit-btn" onclick="submitAnswer()">
+      <span id="submit-label">Next question →</span>
+    </button>
+  </div>
+</div>
+
+<!-- Scoring overlay -->
+<div class="scoring-overlay" id="scoring-overlay">
+  <div class="scoring-card">
+    <div class="scoring-spinner"></div>
+    <div class="scoring-title">Scoring your interview</div>
+    <div class="scoring-sub">Our AI is reviewing all 10 answers. This takes about 15 seconds...</div>
+  </div>
+</div>
+
+<script>
+const SESSION_ID = '{{ session_id }}';
+const PROFESSION = '{{ profession }}';
+let questions = [];
+let currentIndex = 0;
+let isRecording = false;
+let mediaRecorder = null;
+let audioChunks = [];
+let inputType = 'text';
+
+const TIPS = [
+  "💡 Use the STAR method — Situation, Task, Action, Result — for behavioural questions.",
+  "💡 Be specific. Mention numbers, timelines, and measurable outcomes when possible.",
+  "💡 It's fine to take a moment to think before answering. Quality matters more than speed.",
+  "💡 Relate your answer to your actual experience — real examples score higher than hypotheticals.",
+  "💡 For situational questions, explain your thinking process, not just the outcome.",
+];
+
+// Load questions from sessionStorage (set by rules page) or fetch from server
+async function init() {
+  const stored = sessionStorage.getItem('fth_questions');
+  if (stored) {
+    questions = JSON.parse(stored);
+    showQuestion(0);
+  } else {
+    // Fetch from server if user navigated directly
+    try {
+      const res = await fetch(`/interview/session-data/${SESSION_ID}`);
+      const data = await res.json();
+      questions = data.questions;
+      currentIndex = data.answered_count || 0;
+      showQuestion(currentIndex);
+    } catch(e) {
+      document.getElementById('question-text').textContent = 'Could not load questions. Please refresh.';
+    }
+  }
+}
+
+function showQuestion(idx) {
+  currentIndex = idx;
+  const total = questions.length;
+  document.getElementById('question-text').textContent = questions[idx];
+  document.getElementById('q-num').textContent = `Question ${idx + 1} of ${total}`;
+  document.getElementById('progress-label').textContent = `Question ${idx + 1} of ${total}`;
+  document.getElementById('progress-fill').style.width = `${((idx + 1) / total) * 100}%`;
+  document.getElementById('answer').value = '';
+  document.getElementById('char-count').textContent = '0 characters';
+  document.getElementById('tip-box').textContent = TIPS[idx % TIPS.length];
+  document.getElementById('submit-label').textContent = idx < total - 1 ? 'Next question →' : 'Submit & get results →';
+  inputType = 'text';
+}
+
+function updateCount() {
+  const len = document.getElementById('answer').value.length;
+  document.getElementById('char-count').textContent = `${len} character${len !== 1 ? 's' : ''}`;
+}
+
+async function submitAnswer() {
+  const answer = document.getElementById('answer').value.trim();
+  if (!answer) { alert('Please provide an answer before continuing.'); return; }
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  document.getElementById('saving-indicator').style.display = 'inline';
+
+  try {
+    await fetch('/interview/answer', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        session_id: SESSION_ID,
+        question_index: currentIndex,
+        question: questions[currentIndex],
+        answer: answer,
+        input_type: inputType,
+      })
+    });
+  } catch(e) {
+    console.error('Save error:', e);
+  }
+
+  document.getElementById('saving-indicator').style.display = 'none';
+
+  if (currentIndex < questions.length - 1) {
+    showQuestion(currentIndex + 1);
+    btn.disabled = false;
+  } else {
+    // All answered — trigger scoring
+    document.getElementById('scoring-overlay').classList.add('show');
+    await scoreInterview();
+  }
+}
+
+async function scoreInterview() {
+  try {
+    const res = await fetch(`/interview/score/${SESSION_ID}`, {method: 'POST'});
+    const data = await res.json();
+    if (res.ok) {
+      sessionStorage.removeItem('fth_questions');
+      window.location.href = `/interview/result/${SESSION_ID}`;
+    } else {
+      alert(data.detail || 'Scoring failed. Please contact support.');
+      document.getElementById('scoring-overlay').classList.remove('show');
+    }
+  } catch(e) {
+    alert('Network error during scoring. Your answers are saved — please try visiting your dashboard.');
+    document.getElementById('scoring-overlay').classList.remove('show');
+  }
+}
+
+// Voice input
+async function toggleVoice() {
+  if (!isRecording) {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({audio: true});
+      mediaRecorder = new MediaRecorder(stream);
+      audioChunks = [];
+      mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+      mediaRecorder.onstop = async () => {
+        const blob = new Blob(audioChunks, {type: 'audio/webm'});
+        await transcribeAudio(blob);
+        stream.getTracks().forEach(t => t.stop());
+      };
+      mediaRecorder.start();
+      isRecording = true;
+      inputType = 'voice';
+      document.getElementById('voice-btn').classList.add('recording');
+      document.getElementById('voice-label').textContent = 'Stop recording';
+    } catch(e) {
+      alert('Microphone access denied. Please allow microphone access to use voice input.');
+    }
+  } else {
+    mediaRecorder.stop();
+    isRecording = false;
+    document.getElementById('voice-btn').classList.remove('recording');
+    document.getElementById('voice-label').textContent = 'Processing…';
+  }
+}
+
+async function transcribeAudio(blob) {
+  // Use Web Speech API for transcription (browser-native, free)
+  // Falls back to showing a message if not supported
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    document.getElementById('voice-label').textContent = 'Speak answer';
+    alert('Voice transcription is not supported in this browser. Please use Chrome or Edge for voice input.');
+    return;
+  }
+  // Re-use the text area — voice was already captured live via SpeechRecognition below
+  document.getElementById('voice-label').textContent = 'Speak answer';
+}
+
+// Live speech recognition (more reliable than recording + transcription)
+let recognition = null;
+function toggleVoice() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    alert('Voice input is supported in Chrome and Edge. Please use one of these browsers for voice input, or type your answer.');
+    return;
+  }
+  if (!isRecording) {
+    recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = 'en-IN';
+    let finalTranscript = document.getElementById('answer').value;
+    recognition.onresult = (e) => {
+      let interim = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        if (e.results[i].isFinal) {
+          finalTranscript += e.results[i][0].transcript + ' ';
+        } else {
+          interim = e.results[i][0].transcript;
+        }
+      }
+      document.getElementById('answer').value = finalTranscript + interim;
+      updateCount();
+    };
+    recognition.start();
+    isRecording = true;
+    inputType = 'voice';
+    document.getElementById('voice-btn').classList.add('recording');
+    document.getElementById('voice-label').textContent = 'Stop recording';
+  } else {
+    recognition.stop();
+    isRecording = false;
+    document.getElementById('voice-btn').classList.remove('recording');
+    document.getElementById('voice-label').textContent = 'Speak answer';
+  }
+}
+
+init();
+</script>
+</body>
+</html>
