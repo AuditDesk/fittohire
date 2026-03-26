@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — FitToHire</title>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --green:#1D9E75;--green-dark:#0F6E56;--green-bg:#E1F5EE;
+      --amber:#BA7517;--amber-bg:#FAEEDA;
+      --purple:#534AB7;--purple-bg:#EEEDFE;
+      --text:#1a1a1a;--muted:#6b7280;--border:#e5e7eb;
+      --bg:#f3f4f6;--white:#ffffff;--red:#dc2626;--red-bg:#fef2f2;
+    }
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+    nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 1.5rem;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+    .logo{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:600;color:var(--text);text-decoration:none}
+    .logo-mark{width:28px;height:28px;background:var(--green);border-radius:6px;display:flex;align-items:center;justify-content:center}
+    .logo-mark svg{width:16px;height:16px;fill:none;stroke:white;stroke-width:2.5}
+    .logo span{color:var(--green)}
+    .nav-r{display:flex;align-items:center;gap:12px}
+    .nav-email{font-size:13px;color:var(--muted)}
+    .nav-out{font-size:13px;color:var(--muted);text-decoration:none;padding:5px 12px;border:1px solid var(--border);border-radius:6px}
+    .nav-out:hover{color:var(--text)}
+    .page{max-width:960px;margin:0 auto;padding:2rem 1.5rem}
+    .ph{margin-bottom:1.75rem}
+    .ph h1{font-size:22px;font-weight:600}
+    .ph p{font-size:14px;color:var(--muted);margin-top:4px}
+    .banner{border-radius:12px;padding:14px 18px;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+    .banner.active{background:var(--green-bg);border:1px solid #9FE1CB}
+    .banner.expired{background:var(--red-bg);border:1px solid #fecaca}
+    .banner.none{background:var(--amber-bg);border:1px solid #FAC775}
+    .bi{display:flex;align-items:center;gap:10px}
+    .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+    .dot.active{background:var(--green)}.dot.expired{background:var(--red)}.dot.none{background:var(--amber)}
+    .bt strong{font-size:14px;font-weight:500;display:block}
+    .bt span{font-size:12px;color:var(--muted)}
+    .ba{font-size:13px;font-weight:500;padding:7px 16px;border-radius:8px;text-decoration:none;border:none;cursor:pointer}
+    .ba.up{background:var(--green);color:white}
+    .ba.mg{background:var(--white);color:var(--text);border:1px solid var(--border)}
+    .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:1.75rem}
+    .sc{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+    .sc.hi{border-color:var(--green)}.sc.hi .sv{color:var(--green)}
+    .sl{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}
+    .sv{font-size:28px;font-weight:600;line-height:1}
+    .ss{font-size:12px;color:var(--muted);margin-top:4px}
+    .cta{background:var(--green);border-radius:12px;padding:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1.75rem;flex-wrap:wrap}
+    .cta h2{font-size:18px;font-weight:600;color:white}
+    .cta p{font-size:14px;color:rgba(255,255,255,.8);margin-top:4px}
+    .cta-btn{background:white;color:var(--green-dark);font-size:14px;font-weight:600;padding:10px 24px;border-radius:8px;text-decoration:none;white-space:nowrap;flex-shrink:0}
+    .cta-btn:hover{opacity:.9}
+    .sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+    .sh h2{font-size:16px;font-weight:600}
+    .sh a{font-size:13px;color:var(--green);text-decoration:none}
+    .slist{display:grid;gap:10px}
+    .scard{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:16px;text-decoration:none;color:inherit;transition:border-color .15s}
+    .scard:hover{border-color:var(--green)}
+    .score-circle{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+    .s-hi{background:var(--green-bg);color:var(--green-dark)}
+    .s-md{background:var(--amber-bg);color:var(--amber)}
+    .s-lo{background:var(--red-bg);color:var(--red)}
+    .si{flex:1;min-width:0}
+    .sp{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .sm{font-size:12px;color:var(--muted);margin-top:3px}
+    .sbadge{font-size:11px;padding:3px 10px;border-radius:99px;font-weight:500;white-space:nowrap;flex-shrink:0}
+    .bg{background:#FAEEDA;color:#633806}.bsi{background:#F1EFE8;color:#444441}
+    .sarr{color:var(--muted);font-size:18px;flex-shrink:0}
+    .empty{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:3rem 2rem;text-align:center}
+    .ei{width:56px;height:56px;border-radius:50%;background:var(--green-bg);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem}
+    .ei svg{width:26px;height:26px;stroke:var(--green);fill:none;stroke-width:2}
+    .empty h3{font-size:17px;font-weight:600;margin-bottom:6px}
+    .empty p{font-size:14px;color:var(--muted);line-height:1.6;max-width:320px;margin:0 auto}
+    .pc{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-top:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .pinfo{display:flex;align-items:center;gap:12px}
+    .pav{width:40px;height:40px;border-radius:50%;background:var(--purple-bg);color:var(--purple);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;flex-shrink:0}
+    .ptxt strong{font-size:14px;font-weight:500;display:block}
+    .ptxt span{font-size:12px;color:var(--muted)}
+    .plink{font-size:13px;color:var(--green);text-decoration:none;padding:6px 14px;border:1px solid var(--green);border-radius:8px;white-space:nowrap}
+    .plink:hover{background:var(--green-bg)}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="/" class="logo">
+    <div class="logo-mark"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+    Fit<span>To</span>Hire
+  </a>
+  <div class="nav-r">
+    <span class="nav-email">{{ user.email }}</span>
+    <a href="/auth/logout" class="nav-out">Sign out</a>
+  </div>
+</nav>
+<div class="page">
+  <div class="ph">
+    <h1>Welcome back{% if user.name %}, {{ user.name.split()[0] }}{% endif %}</h1>
+    <p>Your interview prep dashboard</p>
+  </div>
+
+  {% if subscription and subscription.status == 'active' %}
+  <div class="banner active">
+    <div class="bi"><div class="dot active"></div><div class="bt"><strong>{{ subscription.plan | title }} plan — active</strong><span>{{ subscription.days_left }} days remaining</span></div></div>
+    <a href="/billing" class="ba mg">Manage plan</a>
+  </div>
+  {% elif subscription and subscription.status == 'expired' %}
+  <div class="banner expired">
+    <div class="bi"><div class="dot expired"></div><div class="bt"><strong>Subscription expired</strong><span>Renew to continue practising</span></div></div>
+    <a href="/pricing" class="ba up">Renew now</a>
+  </div>
+  {% else %}
+  <div class="banner none">
+    <div class="bi"><div class="dot none"></div><div class="bt"><strong>No active subscription</strong><span>Subscribe to start mock interviews</span></div></div>
+    <a href="/pricing" class="ba up">Subscribe — ₹199/month</a>
+  </div>
+  {% endif %}
+
+  <div class="stats">
+    <div class="sc"><div class="sl">Sessions</div><div class="sv">{{ stats.total_sessions }}</div><div class="ss">completed</div></div>
+    <div class="sc {% if stats.avg_score >= 70 %}hi{% endif %}"><div class="sl">Avg score</div><div class="sv">{{ stats.avg_score }}%</div><div class="ss">all sessions</div></div>
+    <div class="sc"><div class="sl">Badges</div><div class="sv">{{ stats.badges }}</div><div class="ss">earned</div></div>
+    <div class="sc"><div class="sl">Best score</div><div class="sv">{{ stats.best_score }}%</div><div class="ss">personal best</div></div>
+  </div>
+
+  <div class="cta">
+    <div><h2>Ready to practise?</h2><p>Pick your profession and start a mock interview — scored instantly by AI.</p></div>
+    {% if subscription and subscription.status == 'active' %}
+    <a href="/interview/start" class="cta-btn">Start interview</a>
+    {% else %}
+    <a href="/pricing" class="cta-btn">Subscribe to start</a>
+    {% endif %}
+  </div>
+
+  <div class="sh">
+    <h2>Recent sessions</h2>
+    {% if sessions %}<a href="/sessions">View all</a>{% endif %}
+  </div>
+
+  {% if sessions %}
+  <div class="slist">
+    {% for s in sessions %}
+    <a href="/sessions/{{ s.id }}" class="scard">
+      <div class="score-circle {% if s.score >= 75 %}s-hi{% elif s.score >= 50 %}s-md{% else %}s-lo{% endif %}">{{ s.score }}%</div>
+      <div class="si">
+        <div class="sp">{{ s.profession }}</div>
+        <div class="sm">{{ s.question_count }} questions &middot; {{ s.completed_at }}</div>
+      </div>
+      {% if s.badge_label %}<span class="sbadge {% if s.score >= 80 %}bg{% else %}bsi{% endif %}">{{ s.badge_label }}</span>{% endif %}
+      <span class="sarr">&rsaquo;</span>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty">
+    <div class="ei"><svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg></div>
+    <h3>No interviews yet</h3>
+    <p>Complete your first mock interview to see your scores, feedback, and badges here.</p>
+  </div>
+  {% endif %}
+
+  <div class="pc">
+    <div class="pinfo">
+      <div class="pav">{{ user.email[0] | upper }}</div>
+      <div class="ptxt">
+        <strong>Your public proof profile</strong>
+        <span>{% if profile and profile.public_slug %}fittohire.in/p/{{ profile.public_slug }}{% else %}Set up your profile to get a shareable URL{% endif %}</span>
+      </div>
+    </div>
+    {% if profile and profile.public_slug %}
+    <a href="/p/{{ profile.public_slug }}" class="plink" target="_blank">View profile &rarr;</a>
+    {% else %}
+    <a href="/profile/setup" class="plink">Set up profile</a>
+    {% endif %}
+  </div>
+</div>
+</body>
+</html>
