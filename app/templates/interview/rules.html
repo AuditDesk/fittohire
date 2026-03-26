@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Before You Begin — FitToHire</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    :root{--green:#16A34A;--green-light:#F0FDF4;--border:#E5E7EB;--text:#111827;--muted:#6B7280;--white:#fff;--amber:#F59E0B}
+    body{font-family:'DM Sans',sans-serif;background:#F9FAFB;color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
+    .card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:2.5rem;max-width:560px;width:100%}
+    .brand-fit{color:#2563EB;font-weight:600}.brand-to{color:#6B7280;font-weight:600}.brand-hire{color:#16A34A;font-weight:600}
+    .tag{display:inline-block;padding:4px 12px;background:var(--green-light);color:var(--green);border-radius:99px;font-size:12px;font-weight:500;margin-bottom:1rem}
+    h1{font-size:22px;font-weight:600;margin-bottom:6px}
+    .prof{font-size:16px;color:var(--muted);margin-bottom:1.5rem}
+    .rules{list-style:none;display:grid;gap:12px;margin-bottom:1.5rem}
+    .rule{display:flex;gap:12px;align-items:flex-start;font-size:14px;line-height:1.6;color:#374151}
+    .rule-icon{width:28px;height:28px;border-radius:8px;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:1px}
+    .divider{height:1px;background:var(--border);margin:1.5rem 0}
+    .score-info{background:#F8FAFC;border-radius:10px;padding:14px;margin-bottom:1.5rem}
+    .score-info p{font-size:13px;color:var(--muted);line-height:1.6}
+    .score-info strong{color:var(--text)}
+    .attempt-info{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin-bottom:1.5rem}
+    .attempt-dots{display:flex;gap:4px}
+    .dot{width:10px;height:10px;border-radius:50%}
+    .dot.used{background:#D1D5DB}
+    .dot.available{background:var(--green)}
+    .blocked{background:#FEF2F2;border:1px solid #FECACA;border-radius:10px;padding:14px;text-align:center;margin-bottom:1rem}
+    .blocked p{font-size:14px;color:#991B1B}
+    .cta{width:100%;padding:14px;background:var(--green);color:white;border:none;border-radius:12px;font-size:15px;font-weight:500;cursor:pointer;transition:background .15s}
+    .cta:hover{background:#15803D}
+    .back{display:block;text-align:center;margin-top:12px;font-size:13px;color:var(--muted);text-decoration:none}
+    .back:hover{color:var(--text)}
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="tag">Getting ready</div>
+  <h1>Before you begin</h1>
+  <p class="prof">{{ profession }} mock interview · 10 questions · ~15 minutes</p>
+
+  <ul class="rules">
+    <li class="rule">
+      <div class="rule-icon">🎯</div>
+      <div>Answer as you would in a real interview. The AI scores based on <strong>depth, clarity, and relevance</strong> — not keywords. Honest answers always score better than rehearsed ones.</div>
+    </li>
+    <li class="rule">
+      <div class="rule-icon">💬</div>
+      <div>You can <strong>type or speak</strong> your answers. Take your time — there is no time limit per question. Aim for 3–5 sentences minimum.</div>
+    </li>
+    <li class="rule">
+      <div class="rule-icon">💾</div>
+      <div>Your answers are <strong>saved automatically</strong> after each question. If you lose connection or close the browser, your progress is safe and you can continue from where you left off.</div>
+    </li>
+    <li class="rule">
+      <div class="rule-icon">🔄</div>
+      <div>This is a <strong>practice platform</strong>. Everyone starts somewhere. If you're not happy with your score, come back and try again — your scores almost always improve with practice.</div>
+    </li>
+    <li class="rule">
+      <div class="rule-icon">🏅</div>
+      <div>Score <strong>60% or above</strong> to earn a badge. Your <strong>best score</strong> per profession appears on your public profile — so only your strongest performance is shown to employers.</div>
+    </li>
+    {% if is_annual %}
+    <li class="rule">
+      <div class="rule-icon">✨</div>
+      <div>As an annual subscriber, you'll receive <strong>detailed per-question feedback and coaching tips</strong> after completing this session.</div>
+    </li>
+    {% endif %}
+  </ul>
+
+  <div class="score-info">
+    <p>Your profile is <strong>visible to all employers</strong> on FitToHire. Verified employers with a subscription can also read your interview answers — this helps them assess your communication style before reaching out. You can set your profile to private at any time from your dashboard.</p>
+  </div>
+
+  <div class="attempt-info">
+    <div class="attempt-dots">
+      {% for i in range(daily_limit) %}
+        <div class="dot {{ 'used' if i < attempts_today else 'available' }}"></div>
+      {% endfor %}
+    </div>
+    <span>{{ daily_limit - attempts_today }} of {{ daily_limit }} attempts remaining today for this profession</span>
+  </div>
+
+  {% if can_attempt %}
+  <button class="cta" onclick="startInterview()">I'm ready — start the interview</button>
+  {% else %}
+  <div class="blocked">
+    <p>You've used all {{ daily_limit }} attempts for <strong>{{ profession }}</strong> today. Come back tomorrow to try again — consistent practice is what builds real interview confidence.</p>
+  </div>
+  {% endif %}
+  <a href="/interview/start" class="back">← Choose a different profession</a>
+</div>
+
+<script>
+const profession = {{ profession|tojson }};
+const isCustom = new URLSearchParams(window.location.search).get('custom') === 'true';
+
+async function startInterview() {
+  const btn = document.querySelector('.cta');
+  btn.disabled = true;
+  btn.textContent = 'Preparing your questions…';
+  try {
+    const res = await fetch('/interview/begin', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({profession, is_custom: isCustom})
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      alert(data.detail || 'Could not start interview. Please try again.');
+      btn.disabled = false;
+      btn.textContent = "I'm ready — start the interview";
+      return;
+    }
+    sessionStorage.setItem('fth_questions', JSON.stringify(data.questions));
+    sessionStorage.setItem('fth_profession', profession);
+    window.location.href = `/interview/session/${data.session_id}`;
+  } catch(e) {
+    alert('Network error. Please try again.');
+    btn.disabled = false;
+    btn.textContent = "I'm ready — start the interview";
+  }
+}
+</script>
+</body>
+</html>
