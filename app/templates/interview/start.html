@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Choose Profession — FitToHire</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    :root{--green:#16A34A;--green-light:#F0FDF4;--border:#E5E7EB;--text:#111827;--muted:#6B7280;--white:#fff}
+    body{font-family:'DM Sans',sans-serif;background:#F9FAFB;color:var(--text);min-height:100vh}
+    nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem;height:60px;display:flex;align-items:center;justify-content:space-between}
+    .logo{font-size:18px;font-weight:600;text-decoration:none}
+    .brand-fit{color:#2563EB}.brand-to{color:#6B7280}.brand-hire{color:#16A34A}
+    .page{max-width:900px;margin:0 auto;padding:2.5rem 1.5rem}
+    h1{font-size:26px;font-weight:600;margin-bottom:6px}
+    .sub{font-size:14px;color:var(--muted);margin-bottom:2rem}
+    .search-wrap{position:relative;margin-bottom:1.5rem}
+    .search-wrap input{width:100%;padding:12px 16px 12px 44px;border:1.5px solid var(--border);border-radius:12px;font-size:15px;outline:none;background:var(--white)}
+    .search-wrap input:focus{border-color:var(--green)}
+    .search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:18px}
+    .professions{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:2rem}
+    .prof-pill{padding:9px 18px;border:1.5px solid var(--border);border-radius:99px;font-size:14px;cursor:pointer;background:var(--white);transition:all .15s;white-space:nowrap}
+    .prof-pill:hover{border-color:var(--green);background:var(--green-light);color:var(--green)}
+    .prof-pill.selected{border-color:var(--green);background:var(--green);color:var(--white)}
+    .prof-pill.hidden{display:none}
+    .other-wrap{border:1.5px dashed var(--border);border-radius:12px;padding:16px;background:var(--white);margin-bottom:1.5rem}
+    .other-wrap label{font-size:13px;font-weight:500;color:var(--muted);display:block;margin-bottom:6px}
+    .other-wrap input{width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:14px;outline:none}
+    .other-wrap input:focus{border-color:var(--green)}
+    .resume-banner{background:#FFF7ED;border:1px solid #FED7AA;border-radius:12px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;gap:12px;flex-wrap:wrap}
+    .resume-text{font-size:14px;color:#92400E}
+    .resume-text strong{color:#78350F}
+    .resume-actions{display:flex;gap:8px}
+    .btn-resume{padding:8px 16px;border-radius:8px;font-size:13px;cursor:pointer;border:none;font-weight:500}
+    .btn-continue{background:var(--green);color:white}
+    .btn-fresh{background:white;color:var(--muted);border:1px solid var(--border)!important;border:none}
+    .cta{width:100%;padding:14px;background:var(--green);color:white;border:none;border-radius:12px;font-size:15px;font-weight:500;cursor:pointer;transition:background .15s}
+    .cta:hover{background:#15803D}
+    .cta:disabled{background:#D1FAE5;cursor:not-allowed}
+    .plan-note{font-size:12px;color:var(--muted);text-align:center;margin-top:10px}
+    .plan-note span{color:var(--green);font-weight:500}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="/" class="logo"><span class="brand-fit">Fit</span><span class="brand-to">To</span><span class="brand-hire">Hire</span></a>
+  <a href="/dashboard" style="font-size:13px;color:var(--muted);text-decoration:none">← Dashboard</a>
+</nav>
+<div class="page">
+  <h1>Choose your profession</h1>
+  <p class="sub">Select from the list below or type your own. Your interview will be tailored specifically to your role.</p>
+
+  {% if resume_session %}
+  <div class="resume-banner">
+    <div class="resume-text">You have an unfinished <strong>{{ resume_session.profession }}</strong> interview. Continue where you left off?</div>
+    <div class="resume-actions">
+      <a href="/interview/session/{{ resume_session.id }}" class="btn-resume btn-continue">Continue</a>
+      <button class="btn-resume btn-fresh" onclick="abandonAndFresh('{{ resume_session.id }}')">Start fresh</button>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="search" placeholder="Search professions..." oninput="filterProfessions(this.value)">
+  </div>
+
+  <div class="professions" id="prof-list">
+    {% for p in professions %}
+    <button class="prof-pill" onclick="selectProfession('{{ p }}', this)" data-prof="{{ p }}">{{ p }}</button>
+    {% endfor %}
+  </div>
+
+  <div class="other-wrap">
+    <label>Don't see your profession? Enter it below:</label>
+    <input type="text" id="custom-prof" placeholder="e.g. Marine Biologist, Game Developer..." oninput="selectCustom(this.value)">
+  </div>
+
+  <button class="cta" id="cta-btn" disabled onclick="proceedToRules()">Select a profession to continue →</button>
+  <p class="plan-note">You can attempt each profession <span>{{ daily_limit }} time{{ 's' if daily_limit > 1 else '' }} per day</span> on your {{ plan }} plan.</p>
+</div>
+
+<script>
+let selectedProfession = null;
+let isCustom = false;
+
+function selectProfession(name, el) {
+  document.querySelectorAll('.prof-pill').forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('custom-prof').value = '';
+  selectedProfession = name;
+  isCustom = false;
+  updateCTA();
+}
+
+function selectCustom(val) {
+  document.querySelectorAll('.prof-pill').forEach(p => p.classList.remove('selected'));
+  selectedProfession = val.trim() || null;
+  isCustom = true;
+  updateCTA();
+}
+
+function updateCTA() {
+  const btn = document.getElementById('cta-btn');
+  if (selectedProfession) {
+    btn.disabled = false;
+    btn.textContent = `Continue with ${selectedProfession} →`;
+  } else {
+    btn.disabled = true;
+    btn.textContent = 'Select a profession to continue →';
+  }
+}
+
+function filterProfessions(query) {
+  const q = query.toLowerCase();
+  document.querySelectorAll('.prof-pill').forEach(p => {
+    p.classList.toggle('hidden', !p.dataset.prof.toLowerCase().includes(q));
+  });
+}
+
+function proceedToRules() {
+  if (!selectedProfession) return;
+  const encoded = encodeURIComponent(selectedProfession);
+  window.location.href = `/interview/rules/${encoded}?custom=${isCustom}`;
+}
+
+async function abandonAndFresh(sessionId) {
+  await fetch(`/interview/abandon/${sessionId}`, {method:'POST'});
+  document.querySelector('.resume-banner').remove();
+}
+</script>
+</body>
+</html>
