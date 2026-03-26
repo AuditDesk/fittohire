@@ -6,3 +6,4 @@ supabase
 razorpay
 httpx
 pydantic[email]
+anthropic
