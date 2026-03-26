@@ -4,13 +4,13 @@ from fastapi.responses import FileResponse
 import os
 
 app = FastAPI()
-
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-from app.routers import auth, payments, dashboard
+from app.routers import auth, payments, dashboard, interview
 app.include_router(auth.router)
 app.include_router(payments.router)
 app.include_router(dashboard.router)
+app.include_router(interview.router)
 
 @app.get("/")
 async def home():
