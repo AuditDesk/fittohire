@@ -232,7 +232,7 @@ async def set_session(request: Request, response: Response):
 
     # Redirect destination based on role
     redirect = "/employer/dashboard" if role == "employer" else "/dashboard"
-    return {"status": "ok", "redirect": redirect}
+    return {"status": "ok", "redirect": redirect, "user_id": user_id}
 
 
 @router.post("/logout")
