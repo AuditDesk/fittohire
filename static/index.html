@@ -36,6 +36,13 @@
 <!-- Fonts -->
 <!-- No external fonts — using system fonts for instant rendering -->
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@900&display=swap');
+  .fth-logo { display:inline-flex; align-items:center; gap:10px; text-decoration:none; }
+  .fth-logo-text { font-family:'Poppins','Arial Black',sans-serif; font-weight:900; font-size:22px; letter-spacing:-0.5px; line-height:1; filter:drop-shadow(1px 2px 3px rgba(0,0,0,0.22)); display:inline-flex; }
+  .fth-logo-text .f { color:#DC2626; -webkit-text-stroke:0.5px #7f0000; text-shadow:1px 1px 0 #7f0000; }
+  .fth-logo-text .t { color:#EAB308; -webkit-text-stroke:0.5px #713f12; text-shadow:1px 1px 0 #713f12; }
+  .fth-logo-text .h { color:#16A34A; -webkit-text-stroke:0.5px #052e16; text-shadow:1px 1px 0 #052e16; }
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
@@ -936,6 +943,9 @@ footer {
 
 /* RESPONSIVE */
 @media (max-width: 900px) {
+  #why .two-col { grid-template-columns: 1fr !important; }
+  #why { padding: 60px 24px !important; }
+
   nav { padding: 16px 24px; }
   .hero { padding: 100px 24px 60px; }
   .hero-grid { grid-template-columns: 1fr; gap: 48px; }
@@ -977,7 +987,27 @@ footer {
 
 <!-- NAV -->
 <nav>
-  <a href="/" class="logo"><span class="brand-fit">Fit</span><span class="brand-to">To</span><span class="brand-hire">Hire</span></a>
+  <a href="/" class="fth-logo"><svg width="34" height="38" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+  <defs>
+    <radialGradient id="rL" cx="38%" cy="30%" r="62%"><stop offset="0%" stop-color="#ff8080"/><stop offset="38%" stop-color="#DC2626"/><stop offset="100%" stop-color="#6b0000"/></radialGradient>
+    <radialGradient id="aL" cx="38%" cy="30%" r="62%"><stop offset="0%" stop-color="#fef08a"/><stop offset="38%" stop-color="#EAB308"/><stop offset="100%" stop-color="#4a2800"/></radialGradient>
+    <radialGradient id="gL" cx="38%" cy="30%" r="62%"><stop offset="0%" stop-color="#86efac"/><stop offset="38%" stop-color="#16A34A"/><stop offset="100%" stop-color="#022c16"/></radialGradient>
+  </defs>
+  <rect x="4" y="4" width="248" height="248" rx="52" fill="#1a1a1a"/>
+  <rect x="28" y="28" width="200" height="200" rx="28" fill="#0d0d0d"/>
+  <circle cx="128" cy="74" r="38" fill="url(#rL)"/>
+  <circle cx="128" cy="74" r="19" fill="#ff6060" opacity="0.35"/>
+  <circle cx="128" cy="74" r="8" fill="white" opacity="0.72"/>
+  <ellipse cx="114" cy="61" rx="13" ry="7" fill="white" opacity="0.2"/>
+  <circle cx="128" cy="128" r="38" fill="url(#aL)"/>
+  <circle cx="128" cy="128" r="19" fill="#fde047" opacity="0.35"/>
+  <circle cx="128" cy="128" r="8" fill="white" opacity="0.72"/>
+  <ellipse cx="114" cy="115" rx="13" ry="7" fill="white" opacity="0.2"/>
+  <circle cx="128" cy="182" r="38" fill="url(#gL)"/>
+  <circle cx="128" cy="182" r="19" fill="#4ade80" opacity="0.35"/>
+  <circle cx="128" cy="182" r="8" fill="white" opacity="0.72"/>
+  <ellipse cx="114" cy="169" rx="13" ry="7" fill="white" opacity="0.2"/>
+</svg><span class="fth-logo-text"><span class="f">Fit</span><span class="t">To</span><span class="h">Hire</span></span></a>
   <div style="display:flex;align-items:center;gap:10px;">
     <a href="/auth/login" class="nav-signin">Sign in</a>
     <a href="#pricing" class="nav-cta">Get started — &#8377;199/mo</a>
@@ -1083,6 +1113,103 @@ footer {
         </div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- WHY FITTOHIRE EXISTS -->
+<section id="why" style="background:var(--white);padding:100px 48px;">
+  <div style="max-width:1100px;margin:0 auto;">
+
+    <p class="section-label fade-up">Why FitToHire exists</p>
+    <h2 class="section-title fade-up">The hiring process is exhausting.<br>For everyone.</h2>
+
+    <!-- Before FitToHire -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-bottom:56px;" class="fade-up">
+
+      <div style="background:var(--cream);border-radius:16px;padding:32px;">
+        <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;">Before FitToHire — as a job seeker</div>
+        <p style="font-size:15px;color:var(--ink2);line-height:2;">
+          Update your resume. Apply to 50 jobs. Hear back from 3. Take half a day off work. Travel across the city. Wait in a room with 20 others. Interview on a bad day. Wait two weeks. Get rejected with no feedback. Repeat.
+        </p>
+      </div>
+
+      <div style="background:var(--cream);border-radius:16px;padding:32px;">
+        <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;">Before FitToHire — as an employer</div>
+        <p style="font-size:15px;color:var(--ink2);line-height:2;">
+          Post a job. Get 200 applications. Screen 40. Shortlist 10. Schedule 8. Three show up. One is right. They're serving a 90-day notice. Start again.
+        </p>
+      </div>
+
+    </div>
+
+    <p style="font-size:18px;font-weight:300;color:var(--muted);text-align:center;max-width:640px;margin:0 auto 56px;line-height:1.7;" class="fade-up">
+      Both sides are losing time they don't have, on a process that was never designed to work this well.
+    </p>
+
+    <!-- After FitToHire -->
+    <div style="text-align:center;margin-bottom:32px;" class="fade-up">
+      <span style="display:inline-block;background:var(--green);color:white;font-size:13px;font-weight:600;padding:6px 20px;border-radius:99px;letter-spacing:.04em;">AFTER FITTOHIRE</span>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:56px;" class="fade-up">
+
+      <div style="background:var(--cream);border-radius:16px;padding:32px;">
+        <div style="font-size:13px;font-weight:600;color:var(--green);margin-bottom:20px;">For job seekers</div>
+        <div style="display:grid;gap:16px;">
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="width:20px;height:20px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <p style="font-size:14px;color:var(--ink2);line-height:1.6;">Practice on your own time. No travel, no appointments, no bad days.</p>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="width:20px;height:20px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <p style="font-size:14px;color:var(--ink2);line-height:1.6;">Build a proof profile that works for you 24/7 — even while you're still employed.</p>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="width:20px;height:20px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <p style="font-size:14px;color:var(--ink2);line-height:1.6;">Employers find you based on what you can actually do — not how you performed on one nervous afternoon.</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:var(--ink);border-radius:16px;padding:32px;">
+        <div style="font-size:13px;font-weight:600;color:var(--green);margin-bottom:20px;">For employers</div>
+        <div style="display:grid;gap:16px;">
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="width:20px;height:20px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <p style="font-size:14px;color:rgba(255,255,255,0.75);line-height:1.6;">Browse verified scores. No scheduling, no screening, no surprises.</p>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="width:20px;height:20px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <p style="font-size:14px;color:rgba(255,255,255,0.75);line-height:1.6;">See who is available now and who is serving notice. Reach out only when you are ready to hire.</p>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="width:20px;height:20px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <p style="font-size:14px;color:rgba(255,255,255,0.75);line-height:1.6;">Read actual interview answers before making a single phone call. The difference is you get 10 data points before that call.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Trust anchor -->
+    <div style="border:1px solid var(--line);border-radius:16px;padding:32px 40px;text-align:center;max-width:740px;margin:0 auto;" class="fade-up">
+      <p style="font-size:19px;font-weight:400;color:var(--ink);line-height:1.7;font-style:italic;">
+        "A 20-minute interview has never been the gold standard.<br>It's just been the only standard. Until now."
+      </p>
+    </div>
+
   </div>
 </section>
 
@@ -1421,10 +1548,8 @@ let currentPlan = 'monthly';
 
 function openPayModal(plan) {
   currentPlan = plan;
-  document.getElementById('modal-title').textContent =
-    plan === 'monthly' ? 'Start monthly plan' : 'Start annual plan';
-  document.getElementById('modal-price').innerHTML =
-    plan === 'monthly' ? '&#8377;199<span>/month</span>' : '&#8377;1,799<span>/year</span>';
+  document.getElementById('modal-title').textContent = plan === 'monthly' ? 'Start monthly plan' : 'Start annual plan';
+  document.getElementById('modal-price').innerHTML = plan === 'monthly' ? '&#8377;199<span>/month</span>' : '&#8377;1,799<span>/year</span>';
   document.getElementById('modal-email').value = '';
   document.getElementById('pay-modal-bg').classList.add('show');
   setTimeout(() => document.getElementById('modal-email').focus(), 100);
@@ -1465,21 +1590,18 @@ async function proceedToPayment() {
       key: data.key_id,
       subscription_id: data.subscription_id,
       name: 'FitToHire',
-      description: currentPlan === 'monthly'
-        ? 'Job seeker monthly — ₹199/month'
-        : 'Job seeker annual — ₹1,799/year',
+      description: currentPlan === 'monthly' ? 'Job seeker monthly — ₹199/month' : 'Job seeker annual — ₹1,799/year',
       prefill: { email: email },
       theme: { color: '#16A34A' },
       handler: function(response) {
         sessionStorage.setItem('fth_pending_payment', JSON.stringify({
-          payment_id:      response.razorpay_payment_id,
+          payment_id: response.razorpay_payment_id,
           subscription_id: response.razorpay_subscription_id,
-          signature:       response.razorpay_signature,
-          plan:            currentPlan === 'monthly' ? 'js_monthly' : 'js_annual',
-          email:           email,
+          signature: response.razorpay_signature,
+          plan: currentPlan === 'monthly' ? 'js_monthly' : 'js_annual',
+          email: email,
         }));
-        window.location.href = '/auth/login?email='
-          + encodeURIComponent(email) + '&paid=1&plan=' + currentPlan;
+        window.location.href = '/auth/login?email=' + encodeURIComponent(email) + '&paid=1&plan=' + currentPlan;
       },
       modal: {
         ondismiss: function() {
