@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Set Up Your Profile — FitToHire</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green:#16A34A; --green-light:#F0FDF4; --border:#E5E7EB;
+      --text:#111827; --muted:#6B7280; --white:#fff; --cream:#F9FAFB; --red:#EF4444;
+    }
+    body { font-family:-apple-system,'Segoe UI',system-ui,Arial,sans-serif; background:var(--cream); color:var(--text); min-height:100vh; }
+    .brand-fit{color:#DC2626!important;font-weight:800}
+    .brand-to{color:#EAB308!important;font-weight:800}
+    .brand-hire{color:#16A34A!important;font-weight:800}
+    nav { background:var(--white); border-bottom:1px solid var(--border); padding:0 2rem; height:56px; display:flex; align-items:center; justify-content:space-between; }
+    .nav-logo { font-size:18px; font-weight:800; text-decoration:none; }
+    .nav-back { font-size:13px; color:var(--muted); text-decoration:none; padding:7px 14px; border:1px solid var(--border); border-radius:8px; }
+    .nav-back:hover { color:var(--text); border-color:var(--text); }
+    .page { max-width:600px; margin:0 auto; padding:2.5rem 1.5rem 4rem; }
+    h1 { font-size:24px; font-weight:700; margin-bottom:6px; }
+    .subtitle { font-size:14px; color:var(--muted); margin-bottom:2rem; line-height:1.6; }
+    .card { background:var(--white); border:1px solid var(--border); border-radius:16px; padding:24px; margin-bottom:16px; }
+    .card-title { font-size:14px; font-weight:600; color:var(--text); margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--border); }
+    .field { margin-bottom:16px; }
+    .field:last-child { margin-bottom:0; }
+    label { display:block; font-size:13px; font-weight:500; color:var(--text); margin-bottom:6px; }
+    .field-hint { font-size:12px; color:var(--muted); margin-top:4px; }
+    input[type="text"], input[type="tel"], input[type="url"], select, textarea {
+      width:100%; padding:10px 14px; border:1.5px solid var(--border);
+      border-radius:10px; font-size:14px; color:var(--text);
+      font-family:inherit; outline:none; transition:border-color .15s;
+      background:var(--white);
+    }
+    input:focus, select:focus, textarea:focus { border-color:var(--green); }
+    textarea { min-height:80px; resize:vertical; }
+    .slug-wrap { display:flex; align-items:center; border:1.5px solid var(--border); border-radius:10px; overflow:hidden; transition:border-color .15s; }
+    .slug-wrap:focus-within { border-color:var(--green); }
+    .slug-prefix { padding:10px 12px; background:var(--cream); color:var(--muted); font-size:13px; white-space:nowrap; border-right:1px solid var(--border); }
+    .slug-wrap input { border:none; border-radius:0; padding:10px 12px; }
+    .slug-status { font-size:12px; margin-top:4px; }
+    .slug-ok { color:var(--green); }
+    .slug-taken { color:var(--red); }
+    .toggle-row { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:12px 0; border-bottom:1px solid var(--border); }
+    .toggle-row:last-child { border-bottom:none; padding-bottom:0; }
+    .toggle-info { flex:1; }
+    .toggle-label { font-size:14px; font-weight:500; color:var(--text); }
+    .toggle-desc { font-size:12px; color:var(--muted); margin-top:2px; }
+    .toggle { position:relative; width:44px; height:24px; flex-shrink:0; }
+    .toggle input { opacity:0; width:0; height:0; }
+    .toggle-track { position:absolute; inset:0; background:#D1D5DB; border-radius:99px; cursor:pointer; transition:background .2s; }
+    .toggle input:checked + .toggle-track { background:var(--green); }
+    .toggle-thumb { position:absolute; top:2px; left:2px; width:20px; height:20px; background:white; border-radius:50%; transition:transform .2s; pointer-events:none; }
+    .toggle input:checked ~ .toggle-thumb { transform:translateX(20px); }
+    .professions-select { max-height:200px; }
+    .save-btn { width:100%; padding:13px; background:var(--green); color:white; border:none; border-radius:12px; font-size:15px; font-weight:500; cursor:pointer; font-family:inherit; transition:background .15s; margin-top:8px; }
+    .save-btn:hover { background:#15803D; }
+    .save-btn:disabled { background:#D1FAE5; cursor:not-allowed; }
+    .success-banner { background:var(--green-light); border:1px solid #BBF7D0; border-radius:10px; padding:12px 16px; font-size:14px; color:#166534; display:none; margin-bottom:16px; }
+    .error-banner { background:#FEF2F2; border:1px solid #FECACA; border-radius:10px; padding:12px 16px; font-size:14px; color:#991B1B; display:none; margin-bottom:16px; }
+    .profile-link-box { background:var(--cream); border:1px solid var(--border); border-radius:10px; padding:12px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:12px; }
+    .profile-link-url { font-size:13px; color:var(--green); font-weight:500; }
+    .copy-btn { font-size:12px; padding:5px 12px; border:1px solid var(--border); border-radius:8px; background:var(--white); cursor:pointer; font-family:inherit; white-space:nowrap; }
+    .copy-btn:hover { background:var(--cream); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">
+    <span class="brand-fit">Fit</span><span class="brand-to">To</span><span class="brand-hire">Hire</span>
+  </a>
+  <a href="/dashboard" class="nav-back">← Dashboard</a>
+</nav>
+
+<div class="page">
+  <h1>Set up your public profile</h1>
+  <p class="subtitle">Your proof profile is visible to employers on FitToHire. Your interview scores and badges appear automatically — fill in the details below to make your profile complete.</p>
+
+  <div class="success-banner" id="success-banner">✓ Profile saved successfully!</div>
+  <div class="error-banner" id="error-banner"></div>
+
+  <!-- Public URL -->
+  <div class="card">
+    <div class="card-title">Your public profile URL</div>
+    <div class="field">
+      <label for="slug">Choose your username</label>
+      <div class="slug-wrap">
+        <span class="slug-prefix">fittohire.in/p/</span>
+        <input type="text" id="slug" placeholder="yourname" maxlength="40"
+          oninput="checkSlug(this.value)" value="{{ profile.public_slug or '' }}">
+      </div>
+      <div class="slug-status" id="slug-status"></div>
+      <div class="field-hint">Letters, numbers and hyphens only. e.g. rajesh-kumar or rajesh123</div>
+    </div>
+    {% if profile.public_slug %}
+    <div class="profile-link-box">
+      <span class="profile-link-url">fittohire.in/p/{{ profile.public_slug }}</span>
+      <button class="copy-btn" onclick="copyLink()">Copy link</button>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Basic info -->
+  <div class="card">
+    <div class="card-title">Basic information</div>
+    <div class="field">
+      <label for="full_name">Full name</label>
+      <input type="text" id="full_name" placeholder="Rajesh Kumar" value="{{ user.name or '' }}">
+    </div>
+    <div class="field">
+      <label for="profession">Primary profession</label>
+      <select id="profession">
+        <option value="">Select your main profession</option>
+        {% for p in professions %}
+        <option value="{{ p }}" {{ 'selected' if profile.profession == p else '' }}>{{ p }}</option>
+        {% endfor %}
+        <option value="other" {{ 'selected' if profile.profession and profile.profession not in professions else '' }}>Other</option>
+      </select>
+    </div>
+    <div class="field" id="custom-prof-field" style="{{ '' if (profile.profession and profile.profession not in professions) else 'display:none' }}">
+      <label for="custom_profession">Your profession</label>
+      <input type="text" id="custom_profession" placeholder="Enter your profession"
+        value="{{ profile.profession if profile.profession and profile.profession not in professions else '' }}">
+    </div>
+    <div class="field">
+      <label for="location">Location</label>
+      <input type="text" id="location" placeholder="Chennai, Tamil Nadu" value="{{ profile.location or '' }}">
+    </div>
+    <div class="field">
+      <label for="bio">Short bio <span style="color:var(--muted);font-weight:400">(optional)</span></label>
+      <textarea id="bio" placeholder="A few sentences about yourself and your career goals...">{{ profile.bio or '' }}</textarea>
+    </div>
+    <div class="field">
+      <label for="linkedin">LinkedIn URL <span style="color:var(--muted);font-weight:400">(optional)</span></label>
+      <input type="url" id="linkedin" placeholder="https://linkedin.com/in/yourname" value="{{ profile.linkedin_url or '' }}">
+    </div>
+  </div>
+
+  <!-- Contact preferences -->
+  <div class="card">
+    <div class="card-title">Contact preferences</div>
+    <div class="toggle-row">
+      <div class="toggle-info">
+        <div class="toggle-label">Allow employers to contact me</div>
+        <div class="toggle-desc">Shows your email to employers who visit your profile</div>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="show_contact" {{ 'checked' if profile.show_contact else '' }}>
+        <div class="toggle-track"></div>
+        <div class="toggle-thumb"></div>
+      </label>
+    </div>
+    </div>
+  </div>
+
+  <!-- Profile visibility -->
+  <div class="card">
+    <div class="card-title">Profile visibility</div>
+    <div class="toggle-row">
+      <div class="toggle-info">
+        <div class="toggle-label">Public profile</div>
+        <div class="toggle-desc">Your profile and scores are visible to employers. Turn off to make your profile private.</div>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="is_public" {{ 'checked' if profile.profile_visibility != 'private' else '' }} checked>
+        <div class="toggle-track"></div>
+        <div class="toggle-thumb"></div>
+      </label>
+    </div>
+  </div>
+
+  <button class="save-btn" id="save-btn" onclick="saveProfile()">Save profile</button>
+</div>
+
+<script>
+const PROFESSIONS = {{ professions | tojson }};
+let slugAvailable = {{ 'true' if profile.public_slug else 'false' }};
+let slugCheckTimer = null;
+
+document.getElementById('profession').addEventListener('change', function() {
+  const customField = document.getElementById('custom-prof-field');
+  customField.style.display = this.value === 'other' ? 'block' : 'none';
+});
+
+function checkSlug(val) {
+  const status = document.getElementById('slug-status');
+  val = val.toLowerCase().replace(/[^a-z0-9-]/g, '');
+  document.getElementById('slug').value = val;
+
+  if (!val) { status.textContent = ''; slugAvailable = false; return; }
+  if (val.length < 3) { status.textContent = 'Too short — minimum 3 characters'; status.className = 'slug-status slug-taken'; slugAvailable = false; return; }
+
+  status.textContent = 'Checking...';
+  status.className = 'slug-status';
+
+  clearTimeout(slugCheckTimer);
+  slugCheckTimer = setTimeout(async () => {
+    try {
+      const res = await fetch('/profile/check-slug?slug=' + encodeURIComponent(val));
+      const data = await res.json();
+      if (data.available) {
+        status.textContent = '✓ Available — fittohire.in/p/' + val;
+        status.className = 'slug-status slug-ok';
+        slugAvailable = true;
+      } else {
+        status.textContent = '✗ Already taken — try another';
+        status.className = 'slug-status slug-taken';
+        slugAvailable = false;
+      }
+    } catch(e) {
+      status.textContent = '';
+      slugAvailable = true;
+    }
+  }, 500);
+}
+
+async function saveProfile() {
+  const slug = document.getElementById('slug').value.trim();
+  if (!slug) { showError('Please choose a username for your profile URL.'); return; }
+  if (!slugAvailable) { showError('That username is taken. Please choose another.'); return; }
+
+  const profSelect = document.getElementById('profession').value;
+  const profession = profSelect === 'other'
+    ? document.getElementById('custom_profession').value.trim()
+    : profSelect;
+
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
+
+  try {
+    const res = await fetch('/profile/save', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        public_slug:        slug,
+        full_name:          document.getElementById('full_name').value.trim(),
+        profession:         profession,
+        location:           document.getElementById('location').value.trim(),
+        bio:                document.getElementById('bio').value.trim(),
+        linkedin_url:       document.getElementById('linkedin').value.trim(),
+        show_contact:       document.getElementById('show_contact').checked,
+        profile_visibility: document.getElementById('is_public').checked ? 'public' : 'private',
+      })
+    });
+    const data = await res.json();
+    if (res.ok) {
+      document.getElementById('success-banner').style.display = 'block';
+      document.getElementById('error-banner').style.display = 'none';
+      window.scrollTo(0, 0);
+      // Update profile link display
+      setTimeout(() => window.location.reload(), 1000);
+    } else {
+      showError(data.detail || 'Could not save profile. Please try again.');
+    }
+  } catch(e) {
+    showError('Network error. Please try again.');
+  }
+  btn.disabled = false;
+  btn.textContent = 'Save profile';
+}
+
+function showError(msg) {
+  const el = document.getElementById('error-banner');
+  el.textContent = msg;
+  el.style.display = 'block';
+  document.getElementById('success-banner').style.display = 'none';
+  window.scrollTo(0, 0);
+}
+
+function copyLink() {
+  const slug = document.getElementById('slug').value.trim();
+  const url = 'https://fittohire.in/p/' + slug;
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = event.target;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy link', 2000);
+  });
+}
+</script>
+</body>
+</html>
