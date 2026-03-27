@@ -186,3 +186,135 @@ async def public_profile(request: Request, slug: str):
 async def profile_setup(request: Request):
     """Redirect to dashboard for now — profile setup page to be built"""
     return RedirectResponse("/dashboard")
+
+
+# ---------------------------------------------------------------------------
+# Profile setup page
+# ---------------------------------------------------------------------------
+
+PROFESSIONS = [
+    "Chartered Accountant","Software Developer","Financial Analyst",
+    "HR Manager","Data Analyst","Product Manager","Tax Consultant",
+    "DevOps Engineer","Business Analyst","Sales Executive","Digital Marketer",
+    "Operations Manager","Investment Banker","Data Scientist","Project Manager",
+    "Supply Chain Manager","Recruiter","UI/UX Designer","Content Writer",
+    "Legal / Compliance","Cybersecurity Analyst","Customer Success",
+    "Brand Manager","Quality Analyst","Hospital Administrator","Pharmacist",
+    "Teacher / Trainer","Civil Engineer","Mechanical Engineer",
+    "Electrical Engineer","Bank Relationship Manager","Credit Analyst",
+    "Real Estate Agent","Admin Executive","Counsellor","Journalist",
+    "PR Manager","Logistics Manager","Warehouse Manager","Accountant",
+    "CPA","MBA Graduate","Branch Manager","Academic Coordinator",
+    "Video Editor","Graphic Designer","Social Media Manager",
+    "Fleet Coordinator","Property Manager",
+]
+
+
+@router.get("/profile/setup")
+async def profile_setup_page(request: Request):
+    from app.routers.auth import get_current_user
+    user = await get_current_user(request)
+    if not user:
+        return RedirectResponse("/auth/login?next=/profile/setup")
+
+    supabase = get_supabase()
+    profile_data = {}
+    try:
+        result = supabase.table("jobseeker_profiles") \
+            .select("*").eq("user_id", user["id"]).limit(1).execute()
+        if result.data:
+            profile_data = result.data[0]
+    except Exception as e:
+        logger.error(f"Profile fetch error: {e}")
+
+    return templates.TemplateResponse(
+        request=request,
+        name="profile/setup.html",
+        context={
+            "user":        user,
+            "profile":     profile_data,
+            "professions": PROFESSIONS,
+        }
+    )
+
+
+@router.get("/profile/check-slug")
+async def check_slug(slug: str, request: Request):
+    from app.routers.auth import get_current_user
+    user = await get_current_user(request)
+    if not user:
+        return {"available": False}
+
+    import re
+    if not re.match(r'^[a-z0-9-]{3,40}$', slug):
+        return {"available": False}
+
+    supabase = get_supabase()
+    try:
+        result = supabase.table("jobseeker_profiles") \
+            .select("user_id").eq("public_slug", slug).limit(1).execute()
+        if not result.data:
+            return {"available": True}
+        # Available if it's the current user's own slug
+        return {"available": result.data[0]["user_id"] == user["id"]}
+    except Exception as e:
+        return {"available": True}
+
+
+from pydantic import BaseModel
+from typing import Optional
+
+class ProfileSaveRequest(BaseModel):
+    public_slug:        str
+    full_name:          Optional[str] = ""
+    profession:         Optional[str] = ""
+    location:           Optional[str] = ""
+    bio:                Optional[str] = ""
+    linkedin_url:       Optional[str] = ""
+    show_contact:       bool = False
+    profile_visibility: str = "public"
+
+
+@router.post("/profile/save")
+async def save_profile(body: ProfileSaveRequest, request: Request):
+    from app.routers.auth import get_current_user
+    import re
+    user = await get_current_user(request)
+    if not user:
+        from fastapi import HTTPException
+        raise HTTPException(401, "Not authenticated")
+
+    if not re.match(r'^[a-z0-9-]{3,40}$', body.public_slug):
+        from fastapi import HTTPException
+        raise HTTPException(400, "Invalid username. Use letters, numbers and hyphens only.")
+
+    supabase = get_supabase()
+    from datetime import datetime, timezone
+    now = datetime.now(timezone.utc).isoformat()
+
+    try:
+        # Upsert profile
+        supabase.table("jobseeker_profiles").upsert({
+            "user_id":            user["id"],
+            "public_slug":        body.public_slug,
+            "profession":         body.profession,
+            "location":           body.location,
+            "bio":                body.bio,
+            "linkedin_url":       body.linkedin_url,
+            "show_contact":       body.show_contact,
+            "profile_visibility": body.profile_visibility,
+            "updated_at":         now,
+        }, on_conflict="user_id").execute()
+
+        # Update users table with name and phone
+        update_data = {"updated_at": now}
+        if body.full_name:
+            update_data["full_name"] = body.full_name
+        supabase.table("users").update(update_data).eq("id", user["id"]).execute()
+
+        return {"status": "saved", "slug": body.public_slug}
+
+    except Exception as e:
+        logger.error(f"Profile save error: {e}")
+        from fastapi import HTTPException
+        raise HTTPException(500, "Could not save profile. Please try again.")
