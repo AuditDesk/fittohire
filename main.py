@@ -16,6 +16,12 @@ app.include_router(interview.router)
 async def home():
     return FileResponse("static/index.html")
 
+@app.get("/pricing")
+async def pricing():
+    # Redirect to landing page pricing section
+    from fastapi.responses import RedirectResponse
+    return RedirectResponse("/#pricing")
+
 @app.get("/privacy")
 async def privacy():
     return FileResponse("static/privacy.html")
