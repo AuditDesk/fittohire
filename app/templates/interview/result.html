@@ -6,6 +6,13 @@
   <title>Your Results — FitToHire</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
   <style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@900&display=swap');
+  .fth-logo { display:inline-flex; align-items:center; gap:10px; text-decoration:none; }
+  .fth-logo-text { font-family:'Poppins','Arial Black',sans-serif; font-weight:900; font-size:22px; letter-spacing:-0.5px; line-height:1; filter:drop-shadow(1px 2px 3px rgba(0,0,0,0.22)); display:inline-flex; }
+  .fth-logo-text .f { color:#DC2626; -webkit-text-stroke:0.5px #7f0000; text-shadow:1px 1px 0 #7f0000; }
+  .fth-logo-text .t { color:#EAB308; -webkit-text-stroke:0.5px #713f12; text-shadow:1px 1px 0 #713f12; }
+  .fth-logo-text .h { color:#16A34A; -webkit-text-stroke:0.5px #052e16; text-shadow:1px 1px 0 #052e16; }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --green: #16A34A; --green-light: #F0FDF4; --green-mid: #DCFCE7;
@@ -127,9 +134,27 @@
 <body>
 
 <nav>
-  <a href="/" class="nav-logo">
-    <span class="brand-fit">Fit</span><span class="brand-to">To</span><span class="brand-hire">Hire</span>
-  </a>
+  <a href="/" class="fth-logo"><svg width="34" height="38" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+  <defs>
+    <radialGradient id="rL" cx="38%" cy="30%" r="62%"><stop offset="0%" stop-color="#ff8080"/><stop offset="38%" stop-color="#DC2626"/><stop offset="100%" stop-color="#6b0000"/></radialGradient>
+    <radialGradient id="aL" cx="38%" cy="30%" r="62%"><stop offset="0%" stop-color="#fef08a"/><stop offset="38%" stop-color="#EAB308"/><stop offset="100%" stop-color="#4a2800"/></radialGradient>
+    <radialGradient id="gL" cx="38%" cy="30%" r="62%"><stop offset="0%" stop-color="#86efac"/><stop offset="38%" stop-color="#16A34A"/><stop offset="100%" stop-color="#022c16"/></radialGradient>
+  </defs>
+  <rect x="4" y="4" width="248" height="248" rx="52" fill="#1a1a1a"/>
+  <rect x="28" y="28" width="200" height="200" rx="28" fill="#0d0d0d"/>
+  <circle cx="128" cy="74" r="38" fill="url(#rL)"/>
+  <circle cx="128" cy="74" r="19" fill="#ff6060" opacity="0.35"/>
+  <circle cx="128" cy="74" r="8" fill="white" opacity="0.72"/>
+  <ellipse cx="114" cy="61" rx="13" ry="7" fill="white" opacity="0.2"/>
+  <circle cx="128" cy="128" r="38" fill="url(#aL)"/>
+  <circle cx="128" cy="128" r="19" fill="#fde047" opacity="0.35"/>
+  <circle cx="128" cy="128" r="8" fill="white" opacity="0.72"/>
+  <ellipse cx="114" cy="115" rx="13" ry="7" fill="white" opacity="0.2"/>
+  <circle cx="128" cy="182" r="38" fill="url(#gL)"/>
+  <circle cx="128" cy="182" r="19" fill="#4ade80" opacity="0.35"/>
+  <circle cx="128" cy="182" r="8" fill="white" opacity="0.72"/>
+  <ellipse cx="114" cy="169" rx="13" ry="7" fill="white" opacity="0.2"/>
+</svg><span class="fth-logo-text"><span class="f">Fit</span><span class="t">To</span><span class="h">Hire</span></span></a>
   <div class="nav-right">
     <a href="/dashboard" class="nav-link">← Dashboard</a>
     <a href="/interview/start" class="nav-link">New interview</a>
