@@ -29,6 +29,12 @@
     .error { display: none; margin-top: 1rem; }
     .error h2 { color: #dc2626; }
     .error a { color: #1D9E75; }
+
+    
+
+    .brand-fit  { color: #DC2626 !important; font-weight: 800; }
+    .brand-to   { color: #EAB308 !important; font-weight: 800; }
+    .brand-hire { color: #16A34A !important; font-weight: 800; }
   </style>
 </head>
 <body>
@@ -80,7 +86,37 @@
 
       if (res.ok && data.redirect) {
         document.getElementById('msg').textContent = 'All set! Redirecting…';
-        window.location.href = data.redirect;
+
+        // Check for pending payment from landing page
+        const pending = sessionStorage.getItem('fth_pending_payment');
+        if (pending) {
+          try {
+            const p = JSON.parse(pending);
+            sessionStorage.removeItem('fth_pending_payment');
+            document.getElementById('msg').textContent = 'Activating your subscription…';
+
+            // Activate subscription
+            const vRes = await fetch('/pay/subscribe/verify', {
+              method: 'POST',
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify({
+                razorpay_payment_id:      p.payment_id,
+                razorpay_subscription_id: p.subscription_id,
+                razorpay_signature:       p.signature,
+                user_id:                  data.user_id,
+                plan:                     p.plan,
+              })
+            });
+            const vData = await vRes.json();
+            window.location.href = vData.redirect || '/dashboard';
+          } catch(e) {
+            // Payment verification failed — go to dashboard anyway
+            // User can contact support with their payment ID
+            window.location.href = '/dashboard';
+          }
+        } else {
+          window.location.href = data.redirect;
+        }
       } else {
         throw new Error('Session setup failed');
       }
