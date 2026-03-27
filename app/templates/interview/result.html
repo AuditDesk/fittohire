@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Results — FitToHire</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green: #16A34A; --green-light: #F0FDF4; --green-mid: #DCFCE7;
+      --border: #E5E7EB; --text: #111827; --muted: #6B7280;
+      --white: #fff; --cream: #F9FAFB; --amber: #F59E0B; --red: #EF4444;
+      --blue: #3B82F6;
+    }
+    body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); min-height: 100vh; }
+
+    /* Brand */
+    .brand-fit  { color: #DC2626 !important; font-weight: 800; }
+    .brand-to   { color: #EAB308 !important; font-weight: 800; }
+    .brand-hire { color: #16A34A !important; font-weight: 800; }
+
+    /* Nav */
+    nav { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 2rem; height: 58px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+    .nav-logo { font-size: 18px; font-weight: 800; text-decoration: none; font-family: 'Syne', sans-serif; }
+    .nav-right { display: flex; gap: 12px; align-items: center; }
+    .nav-link { font-size: 13px; color: var(--muted); text-decoration: none; padding: 7px 14px; border: 1px solid var(--border); border-radius: 8px; }
+    .nav-link:hover { color: var(--text); border-color: var(--text); }
+
+    /* Page */
+    .page { max-width: 780px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+
+    /* Score hero */
+    .score-hero { background: var(--white); border: 1px solid var(--border); border-radius: 20px; padding: 2.5rem 2rem; text-align: center; margin-bottom: 1.5rem; position: relative; overflow: hidden; }
+    .score-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(22,163,74,0.06) 0%, transparent 70%); pointer-events: none; }
+    .score-profession { font-size: 13px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px; }
+    .score-ring-wrap { position: relative; width: 140px; height: 140px; margin: 0 auto 1.25rem; }
+    .score-ring-wrap svg { width: 140px; height: 140px; transform: rotate(-90deg); }
+    .ring-bg { fill: none; stroke: #F3F4F6; stroke-width: 10; }
+    .ring-fill { fill: none; stroke-width: 10; stroke-linecap: round; transition: stroke-dashoffset 1.5s cubic-bezier(.4,0,.2,1); }
+    .score-number { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .score-big { font-family: 'Syne', sans-serif; font-size: 42px; font-weight: 800; line-height: 1; }
+    .score-pct { font-size: 14px; color: var(--muted); margin-top: 2px; }
+    .badge-display { display: inline-flex; align-items: center; gap: 10px; padding: 10px 20px; border-radius: 99px; font-size: 15px; font-weight: 600; margin-bottom: 1rem; }
+    .badge-gold   { background: #FEF3C7; color: #92400E; }
+    .badge-silver { background: #F3F4F6; color: #374151; }
+    .badge-bronze { background: #FEF3C7; color: #78350F; }
+    .badge-none   { background: var(--green-mid); color: #166534; }
+    .score-verdict { font-size: 17px; font-weight: 500; color: var(--text); margin-bottom: 8px; }
+    .score-feedback { font-size: 14px; color: var(--muted); line-height: 1.7; max-width: 500px; margin: 0 auto 1.5rem; }
+
+    /* Stat row */
+    .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 1.5rem; }
+    .stat-box { background: var(--cream); border-radius: 12px; padding: 14px; text-align: center; }
+    .stat-val { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; color: var(--text); }
+    .stat-lbl { font-size: 11px; color: var(--muted); margin-top: 3px; text-transform: uppercase; letter-spacing: .05em; }
+
+    /* Action buttons */
+    .actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .btn-share { display: inline-flex; align-items: center; gap: 7px; padding: 11px 22px; background: var(--green); color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background .15s; text-decoration: none; }
+    .btn-share:hover { background: #15803D; }
+    .btn-retry { display: inline-flex; align-items: center; gap: 7px; padding: 11px 22px; background: var(--white); color: var(--text); border: 1.5px solid var(--border); border-radius: 10px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all .15s; text-decoration: none; }
+    .btn-retry:hover { border-color: var(--text); }
+    .btn-dash { display: inline-flex; align-items: center; gap: 7px; padding: 11px 22px; background: var(--white); color: var(--muted); border: 1.5px solid var(--border); border-radius: 10px; font-size: 14px; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all .15s; text-decoration: none; }
+
+    /* Breakdown */
+    .section-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 12px; }
+    .breakdown-card { background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 1.5rem; }
+    .breakdown-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .breakdown-item { }
+    .breakdown-label { font-size: 12px; color: var(--muted); font-weight: 500; margin-bottom: 6px; display: flex; justify-content: space-between; }
+    .breakdown-label span { color: var(--text); font-weight: 600; }
+    .breakdown-bar { height: 8px; background: #F3F4F6; border-radius: 99px; overflow: hidden; }
+    .breakdown-fill { height: 100%; border-radius: 99px; transition: width 1.2s cubic-bezier(.4,0,.2,1); }
+
+    /* Per-question feedback (annual only) */
+    .qa-list { display: grid; gap: 12px; margin-bottom: 1.5rem; }
+    .qa-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+    .qa-header { display: flex; align-items: center; gap: 12px; padding: 14px 16px; cursor: pointer; transition: background .15s; }
+    .qa-header:hover { background: var(--cream); }
+    .qa-score-badge { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+    .qa-q { flex: 1; font-size: 14px; font-weight: 500; color: var(--text); line-height: 1.4; }
+    .qa-chevron { font-size: 12px; color: var(--muted); transition: transform .2s; }
+    .qa-chevron.open { transform: rotate(90deg); }
+    .qa-body { display: none; padding: 0 16px 16px; border-top: 1px solid var(--border); }
+    .qa-body.open { display: block; }
+    .qa-answer-label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin: 12px 0 6px; }
+    .qa-answer-text { font-size: 14px; color: var(--text); line-height: 1.6; background: var(--cream); padding: 10px 14px; border-radius: 8px; }
+    .qa-feedback-text { font-size: 13px; color: var(--muted); line-height: 1.6; margin-top: 8px; padding: 10px 14px; background: var(--green-light); border-radius: 8px; border-left: 3px solid var(--green); }
+    .qa-tip { font-size: 12px; color: #166534; background: var(--green-mid); padding: 8px 12px; border-radius: 8px; margin-top: 8px; }
+    .qa-mini-bar { display: flex; gap: 6px; margin-top: 10px; }
+    .qa-mini-item { flex: 1; }
+    .qa-mini-label { font-size: 10px; color: var(--muted); margin-bottom: 3px; }
+    .qa-mini-fill-wrap { height: 4px; background: #F3F4F6; border-radius: 99px; overflow: hidden; }
+    .qa-mini-fill { height: 100%; border-radius: 99px; }
+
+    /* Strengths / improvements */
+    .insights-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1.5rem; }
+    .insight-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 16px; }
+    .insight-title { font-size: 13px; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+    .insight-list { list-style: none; display: grid; gap: 7px; }
+    .insight-list li { font-size: 13px; color: var(--muted); line-height: 1.5; padding-left: 16px; position: relative; }
+    .insight-list li::before { content: ''; position: absolute; left: 0; top: 7px; width: 6px; height: 6px; border-radius: 50%; }
+    .insight-list.strengths li::before { background: var(--green); }
+    .insight-list.improvements li::before { background: var(--amber); }
+
+    /* Upgrade nudge (monthly users) */
+    .upgrade-nudge { background: linear-gradient(135deg, #1e2130, #2d3148); border-radius: 16px; padding: 20px 24px; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    .nudge-text h4 { font-size: 15px; font-weight: 600; color: white; margin-bottom: 4px; }
+    .nudge-text p { font-size: 13px; color: rgba(255,255,255,0.55); line-height: 1.5; }
+    .nudge-btn { padding: 10px 20px; background: var(--amber); color: #1a1a1a; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; font-family: 'DM Sans', sans-serif; text-decoration: none; }
+
+    /* Locked feedback */
+    .locked-block { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 2rem; text-align: center; margin-bottom: 1.5rem; }
+    .locked-icon { font-size: 32px; margin-bottom: 10px; }
+    .locked-title { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+    .locked-sub { font-size: 13px; color: var(--muted); margin-bottom: 1rem; line-height: 1.6; }
+
+    @media (max-width: 600px) {
+      .stat-row { grid-template-columns: 1fr 1fr; }
+      .breakdown-grid { grid-template-columns: 1fr; }
+      .insights-grid { grid-template-columns: 1fr; }
+      .page { padding: 1.5rem 1rem 3rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">
+    <span class="brand-fit">Fit</span><span class="brand-to">To</span><span class="brand-hire">Hire</span>
+  </a>
+  <div class="nav-right">
+    <a href="/dashboard" class="nav-link">← Dashboard</a>
+    <a href="/interview/start" class="nav-link">New interview</a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- Score Hero -->
+  <div class="score-hero">
+    <div class="score-profession">{{ session.profession }} · Mock Interview</div>
+
+    <div class="score-ring-wrap">
+      <svg viewBox="0 0 140 140">
+        <circle class="ring-bg" cx="70" cy="70" r="60"/>
+        <circle class="ring-fill" cx="70" cy="70" r="60"
+          id="ring-fill"
+          stroke="{{ '#16A34A' if session.score >= 80 else '#F59E0B' if session.score >= 60 else '#EF4444' }}"
+          stroke-dasharray="376.99"
+          stroke-dashoffset="376.99"/>
+      </svg>
+      <div class="score-number">
+        <div class="score-big" id="score-num" style="color:{{ '#16A34A' if session.score >= 80 else '#F59E0B' if session.score >= 60 else '#EF4444' }}">0</div>
+        <div class="score-pct">out of 100</div>
+      </div>
+    </div>
+
+    {% if badge %}
+    <div class="badge-display {{ 'badge-gold' if session.score >= 90 else 'badge-silver' if session.score >= 75 else 'badge-bronze' if session.score >= 60 else 'badge-none' }}">
+      {{ badge.icon }} {{ badge.label }}
+    </div>
+    {% elif session.score < 60 %}
+    <div class="badge-display badge-none">
+      Keep going — score 60%+ to earn a badge
+    </div>
+    {% endif %}
+
+    <div class="score-verdict">
+      {% if session.score >= 90 %}Exceptional performance
+      {% elif session.score >= 75 %}Strong interview skills
+      {% elif session.score >= 60 %}Solid foundation — keep practising
+      {% else %}Room to grow — try again tomorrow
+      {% endif %}
+    </div>
+
+    {% if score_data.get('overall_feedback') %}
+    <div class="score-feedback">{{ score_data.overall_feedback }}</div>
+    {% endif %}
+
+    <div class="stat-row">
+      <div class="stat-box">
+        <div class="stat-val">{{ session.score }}%</div>
+        <div class="stat-lbl">Overall score</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val">{{ session.question_count }}</div>
+        <div class="stat-lbl">Questions answered</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val">{{ session.completed_at.strftime('%d %b') if session.completed_at else 'Today' }}</div>
+        <div class="stat-lbl">Completed</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      {% if session.score >= 60 %}
+      <a href="/p/{{ user.id }}" class="btn-share" target="_blank">
+        🔗 Share proof profile
+      </a>
+      {% endif %}
+      <a href="/interview/start" class="btn-retry">↺ Try another profession</a>
+      <a href="/interview/rules/{{ session.profession }}?retry=1" class="btn-retry">Retry this profession</a>
+      <a href="/dashboard" class="btn-dash">Dashboard</a>
+    </div>
+  </div>
+
+  <!-- Score breakdown -->
+  {% set breakdown = score_data.get('questions', [{}])[0].get('score_breakdown') or score_data.get('overall_breakdown') %}
+  {% if score_data %}
+  <div class="breakdown-card">
+    <div class="section-title">Score breakdown</div>
+    <div class="breakdown-grid">
+      {% set avg_clarity = (score_data.get('questions', []) | map(attribute='score_breakdown') | selectattr('clarity', 'defined') | map(attribute='clarity') | list | sum) / ([score_data.get('questions', []) | length, 1] | max) if score_data.get('questions') else 0 %}
+      {% set dims = [
+        ('Clarity', 'How clearly you expressed your answers', '#3B82F6'),
+        ('Depth', 'How thoroughly you covered each topic', '#8B5CF6'),
+        ('Relevance', 'How well answers matched the question', '#16A34A'),
+        ('Communication', 'Language, structure and flow', '#F59E0B'),
+      ] %}
+      {% for dim_name, dim_desc, dim_color in dims %}
+      {% set dim_key = dim_name | lower %}
+      {% set dim_scores = [] %}
+      {% for q in score_data.get('questions', []) %}
+        {% if q.get('score_breakdown') and q.score_breakdown.get(dim_key) %}
+          {% set _ = dim_scores.append(q.score_breakdown[dim_key]) %}
+        {% endif %}
+      {% endfor %}
+      {% set dim_avg = (dim_scores | sum / dim_scores | length) | round | int if dim_scores else session.score %}
+      <div class="breakdown-item">
+        <div class="breakdown-label">{{ dim_name }} <span>{{ dim_avg }}%</span></div>
+        <div class="breakdown-bar">
+          <div class="breakdown-fill" style="width:{{ dim_avg }}%; background:{{ dim_color }};"></div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Strengths & Improvements -->
+  {% if score_data.get('strengths') or score_data.get('improvements') %}
+  <div class="insights-grid">
+    {% if score_data.get('strengths') %}
+    <div class="insight-card">
+      <div class="insight-title" style="color:#166534">✓ Your strengths</div>
+      <ul class="insight-list strengths">
+        {% for s in score_data.strengths %}
+        <li>{{ s }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+    {% if score_data.get('improvements') %}
+    <div class="insight-card">
+      <div class="insight-title" style="color:#92400E">→ Areas to improve</div>
+      <ul class="insight-list improvements">
+        {% for i in score_data.improvements %}
+        <li>{{ i }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <!-- Per-question feedback -->
+  {% if is_annual and answers %}
+  <div class="section-title">Question by question</div>
+  <div class="qa-list">
+    {% for a in answers %}
+    {% set q_data = score_data.get('questions', [])[loop.index0] if score_data.get('questions') else {} %}
+    {% set q_score = q_data.get('score', 0) %}
+    <div class="qa-card">
+      <div class="qa-header" onclick="toggleQA({{ loop.index0 }})">
+        <div class="qa-score-badge" style="background:{{ '#DCFCE7' if q_score >= 80 else '#FEF3C7' if q_score >= 60 else '#FEE2E2' }};color:{{ '#166534' if q_score >= 80 else '#92400E' if q_score >= 60 else '#991B1B' }}">
+          {{ q_score }}
+        </div>
+        <div class="qa-q">Q{{ loop.index }}. {{ a.question }}</div>
+        <div class="qa-chevron" id="chev-{{ loop.index0 }}">▶</div>
+      </div>
+      <div class="qa-body" id="qa-{{ loop.index0 }}">
+        {% if q_data.get('score_breakdown') %}
+        <div class="qa-mini-bar">
+          {% for dim, color in [('clarity','#3B82F6'),('depth','#8B5CF6'),('relevance','#16A34A'),('communication','#F59E0B')] %}
+          <div class="qa-mini-item">
+            <div class="qa-mini-label">{{ dim | title }}</div>
+            <div class="qa-mini-fill-wrap">
+              <div class="qa-mini-fill" style="width:{{ q_data.score_breakdown.get(dim, 0) }}%;background:{{ color }}"></div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+        <div class="qa-answer-label">Your answer</div>
+        <div class="qa-answer-text">{{ a.answer }}</div>
+        {% if q_data.get('feedback') %}
+        <div class="qa-feedback-text">{{ q_data.feedback }}</div>
+        {% endif %}
+        {% if q_data.get('coaching_tip') %}
+        <div class="qa-tip">💡 {{ q_data.coaching_tip }}</div>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% elif not is_annual and answers %}
+  <!-- Monthly users — show answers but lock feedback -->
+  <div class="upgrade-nudge">
+    <div class="nudge-text">
+      <h4>Unlock per-question feedback & coaching</h4>
+      <p>Annual subscribers get detailed feedback on every answer plus coaching tips to improve each response.</p>
+    </div>
+    <a href="/pricing" class="nudge-btn">Upgrade to Annual — ₹1,799/yr</a>
+  </div>
+
+  <div class="section-title">Your answers</div>
+  <div class="qa-list">
+    {% for a in answers %}
+    <div class="qa-card">
+      <div class="qa-header" onclick="toggleQA({{ loop.index0 }})">
+        <div class="qa-score-badge" style="background:#F3F4F6;color:#374151;">
+          Q{{ loop.index }}
+        </div>
+        <div class="qa-q">{{ a.question }}</div>
+        <div class="qa-chevron" id="chev-{{ loop.index0 }}">▶</div>
+      </div>
+      <div class="qa-body" id="qa-{{ loop.index0 }}">
+        <div class="qa-answer-label">Your answer</div>
+        <div class="qa-answer-text">{{ a.answer }}</div>
+        <div class="locked-block" style="padding:12px;margin-top:8px;border-radius:8px;">
+          <div style="font-size:12px;color:var(--muted)">🔒 Feedback & coaching tip available on Annual plan</div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+</div>
+
+<script>
+const finalScore = {{ session.score }};
+const circumference = 376.99;
+
+// Animate score ring and number
+window.addEventListener('load', () => {
+  const ring = document.getElementById('ring-fill');
+  const numEl = document.getElementById('score-num');
+  const offset = circumference - (finalScore / 100 * circumference);
+
+  setTimeout(() => {
+    ring.style.strokeDashoffset = offset;
+  }, 300);
+
+  // Count up number
+  let current = 0;
+  const duration = 1500;
+  const step = duration / finalScore;
+  const counter = setInterval(() => {
+    current++;
+    numEl.textContent = current;
+    if (current >= finalScore) clearInterval(counter);
+  }, step);
+});
+
+// Toggle Q&A accordion
+function toggleQA(idx) {
+  const body = document.getElementById('qa-' + idx);
+  const chev = document.getElementById('chev-' + idx);
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  chev.classList.toggle('open', !isOpen);
+}
+</script>
+</body>
+</html>
