@@ -1469,6 +1469,15 @@ async function proceedToPayment() {
       prefill: { email: email },
       theme: { color: '#16A34A' },
       handler: function(response) {
+        // Store payment details temporarily — will be verified after login
+        sessionStorage.setItem('fth_pending_payment', JSON.stringify({
+          payment_id:      response.razorpay_payment_id,
+          subscription_id: response.razorpay_subscription_id,
+          signature:       response.razorpay_signature,
+          plan:            currentPlan === 'monthly' ? 'js_monthly' : 'js_annual',
+          email:           email,
+        }));
+        // Redirect to login — after login, /auth/callback will activate subscription
         window.location.href = '/auth/login?email=' + encodeURIComponent(email) + '&paid=1&plan=' + currentPlan;
       },
       modal: {
