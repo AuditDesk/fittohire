@@ -109,10 +109,21 @@ async def interview_start(request: Request):
             .eq("status", "active") \
             .limit(1).execute()
         if not sub.data:
-            return RedirectResponse("/pricing?reason=subscription_required")
-        plan = sub.data[0]["plan"]
+            # No active subscription — redirect to dashboard with message
+            return RedirectResponse("/dashboard?msg=subscription_required")
+        # Check period not expired
+        from datetime import datetime, timezone
+        s = sub.data[0]
+        if s.get("current_period_end"):
+            end = datetime.fromisoformat(
+                s["current_period_end"].replace("Z", "+00:00")
+            )
+            if end < datetime.now(timezone.utc):
+                return RedirectResponse("/dashboard?msg=subscription_expired")
+        plan = s["plan"]
     except Exception as e:
         logger.error(f"Subscription check failed: {e}")
+        # Don't block on error — let them through with monthly defaults
 
     # Check for incomplete session to resume
     resume_session = None
