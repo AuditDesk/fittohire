@@ -3,38 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<!-- Primary SEO -->
 <title>FitToHire — Train. Score. Become Fit To Hire.</title>
-<meta name="description" content="Practice AI-powered mock interviews across 50+ professions, earn verified skill badges, and build a public proof profile that gets you hired. Used by job seekers across India.">
-<meta name="keywords" content="mock interview, interview preparation, AI interview, job seeker India, interview practice, skill badges, FitToHire, interview coaching online">
-<meta name="author" content="FitToHire">
-<meta name="robots" content="index, follow">
-<link rel="canonical" href="https://fittohire.in/">
-
-<!-- Google Search Console verification — replace XXXXXX with your actual code from Search Console -->
-<!-- <meta name="google-site-verification" content="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"> -->
-
-<!-- Open Graph — for WhatsApp, LinkedIn, Facebook sharing -->
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://fittohire.in/">
-<meta property="og:title" content="FitToHire — Train. Score. Become Fit To Hire.">
-<meta property="og:description" content="Practice AI-powered mock interviews across 50+ professions, earn verified badges, and build a proof profile employers trust.">
-<meta property="og:image" content="https://fittohire.in/static/og-image.png">
-<meta property="og:site_name" content="FitToHire">
-<meta property="og:locale" content="en_IN">
-
-<!-- Twitter / X card -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="FitToHire — Train. Score. Become Fit To Hire.">
-<meta name="twitter:description" content="AI-powered mock interviews for 50+ professions. Earn badges. Get hired.">
-<meta name="twitter:image" content="https://fittohire.in/static/og-image.png">
-
-<!-- Sitemap reference -->
-<link rel="sitemap" type="application/xml" href="/sitemap.xml">
-
-<!-- Fonts -->
-<!-- No external fonts — using system fonts for instant rendering -->
+<meta name="description" content="Practice AI-powered mock interviews across 50 professions, earn verified badges, and build a proof profile that gets you hired.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -49,8 +21,8 @@
   --accent2: #FF4D1C;
   --green: #00A86B;
   --gold: #F5A623;
-  --display: -apple-system, 'Segoe UI', system-ui, 'Helvetica Neue', Arial, sans-serif;
-  --body: -apple-system, 'Segoe UI', system-ui, 'Helvetica Neue', Arial, sans-serif;
+  --display: 'Syne', sans-serif;
+  --body: 'DM Sans', sans-serif;
 }
 
 html { scroll-behavior: smooth; }
@@ -85,14 +57,7 @@ nav {
   letter-spacing: -0.5px;
 }
 
-.logo .brand-fit{color:#DC2626 !important;font-weight:800}.logo .brand-to{color:#EAB308 !important;font-weight:800}.logo .brand-hire{color:#16A34A !important;font-weight:800}
-
-.nav-signin {
-  color: var(--ink); padding: 9px 20px; border-radius: 6px;
-  text-decoration: none; font-weight: 500; font-size: 14px;
-  border: 1.5px solid var(--line); transition: border-color 0.2s;
-}
-.nav-signin:hover { border-color: var(--ink); }
+.logo span { color: var(--accent); }
 
 .nav-cta {
   background: var(--ink);
@@ -877,7 +842,7 @@ footer {
   letter-spacing: -0.5px;
 }
 
-.footer-logo .brand-fit{color:#DC2626;font-weight:800}.footer-logo .brand-to{color:#EAB308;font-weight:800}.footer-logo .brand-hire{color:#16A34A;font-weight:800}
+.footer-logo span { color: var(--accent); }
 
 .footer-tagline {
   font-size: 13px;
@@ -956,32 +921,14 @@ footer {
   .footer-links { flex-wrap: wrap; gap: 32px; }
   .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
 }
-
-.pay-modal-bg { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:200; align-items:center; justify-content:center; }
-.pay-modal-bg.show { display:flex; }
-.pay-modal { background:var(--white); border-radius:16px; padding:2rem; max-width:400px; width:90%; }
-.pay-modal h3 { font-family:var(--display); font-size:20px; font-weight:700; margin-bottom:6px; }
-.pay-modal p { font-size:14px; color:var(--muted); margin-bottom:1.25rem; line-height:1.5; }
-.pay-modal label { font-size:13px; font-weight:500; color:var(--ink); display:block; margin-bottom:6px; }
-.pay-modal input { width:100%; padding:11px 14px; border:1.5px solid var(--line); border-radius:8px; font-size:15px; outline:none; margin-bottom:1rem; font-family:var(--body); }
-.pay-modal input:focus { border-color:var(--accent); }
-.pay-modal-btns { display:flex; gap:10px; }
-.pay-modal-cancel { flex:1; padding:12px; border:1.5px solid var(--line); border-radius:8px; background:transparent; font-family:var(--body); font-size:14px; cursor:pointer; }
-.pay-modal-go { flex:2; padding:12px; background:var(--accent); color:white; border:none; border-radius:8px; font-family:var(--body); font-size:14px; font-weight:500; cursor:pointer; }
-.pay-modal-go:hover { background:#0052E0; }
-.pay-price { font-family:var(--display); font-size:28px; font-weight:800; color:var(--ink); margin-bottom:1.25rem; }
-.pay-price span { font-size:14px; font-weight:400; color:var(--muted); }
 </style>
 </head>
 <body>
 
 <!-- NAV -->
 <nav>
-  <a href="/" class="logo"><span class="brand-fit">Fit</span><span class="brand-to">To</span><span class="brand-hire">Hire</span></a>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <a href="/auth/login" class="nav-signin">Sign in</a>
-    <a href="#pricing" class="nav-cta">Get started — &#8377;199/mo</a>
-  </div>
+  <a href="/" class="logo">Fit<span>To</span>Hire</a>
+  <a href="#pricing" class="nav-cta">Get Started — ₹199/mo</a>
 </nav>
 
 <!-- HERO -->
@@ -991,7 +938,7 @@ footer {
     <div class="hero-content">
       <div class="hero-eyebrow">
         <div class="hero-eyebrow-dot"></div>
-        AI-Powered Interview Prep — 50+ Professions
+        AI-Powered Interview Prep — 50 Professions
       </div>
       <h1>Train. Score.<br><span class="accent-word">Become</span><br><span class="accent-word2">Fit To Hire.</span></h1>
       <p class="hero-sub">Practice mock interviews with AI, earn verified skill badges, and build a proof profile that shows employers you're ready — not just qualified.</p>
@@ -1007,7 +954,7 @@ footer {
           <div class="trust-icon">
             <svg viewBox="0 0 10 10" fill="none"><path d="M2 5l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
-          50+ professions
+          50 professions
         </div>
         <div class="trust-item">
           <div class="trust-icon">
@@ -1098,7 +1045,7 @@ footer {
         <div class="step-accent" style="background: var(--accent);"></div>
         <span class="step-num">01</span>
         <div class="step-title">Train with AI</div>
-        <p class="step-desc">Pick your profession from 50+ options. Our AI asks you real interview questions — technical, behavioural and situational. Answer in your own words, at your own pace.</p>
+        <p class="step-desc">Pick your profession from 50 options. Our AI asks you real interview questions — technical, behavioural and situational. Answer in your own words, at your own pace.</p>
       </div>
       <div class="step-card">
         <div class="step-accent" style="background: var(--accent2);"></div>
@@ -1117,9 +1064,9 @@ footer {
 </section>
 
 <!-- PROFESSIONS -->
-<section class="professions-section" id="professions">
+<section class="professions-section">
   <div class="professions-inner">
-    <p class="section-label fade-up" style="color: rgba(255,255,255,0.4);">50+ Professions</p>
+    <p class="section-label fade-up" style="color: rgba(255,255,255,0.4);">50 Professions</p>
     <h2 class="prof-title fade-up">Every profession.<br>One platform.</h2>
     <p class="prof-sub fade-up">From chartered accountants to software developers, from HR managers to hospital administrators — if you have an interview coming up, we have you covered.</p>
     <div class="prof-scroll fade-up">
@@ -1178,7 +1125,7 @@ footer {
 </section>
 
 <!-- BADGES -->
-<section class="badges-section" id="badges">
+<section class="badges-section">
   <p class="section-label fade-up">Skill Badges</p>
   <h2 class="section-title fade-up">Earn a badge every session.<br>Build proof employers trust.</h2>
   <p class="section-sub fade-up">Every time you complete a session, you earn a badge. No waiting. No minimum sessions. Instant recognition for every step forward.</p>
@@ -1243,19 +1190,19 @@ footer {
         <ul class="price-features">
           <li>
             <div class="feat-check"><svg viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-            2 attempts per profession per day
+            Unlimited mock interview sessions
           </li>
           <li>
             <div class="feat-check"><svg viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-            All 50+ professions
+            All 50 professions
           </li>
           <li>
             <div class="feat-check"><svg viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-            Basic AI score per session
+            Detailed AI feedback per answer
           </li>
           <li>
             <div class="feat-check"><svg viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-            Badges earned every session (60%+)
+            Badges earned every session
           </li>
           <li>
             <div class="feat-check"><svg viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -1274,7 +1221,7 @@ footer {
             Visible to employers on platform
           </li>
         </ul>
-        <button class="btn-plan outline" onclick="openPayModal('monthly')">Get Started — ₹199/mo</button>
+        <button class="btn-plan outline" onclick="handlePayment('monthly')">Get Started — ₹199/mo</button>
       </div>
 
       <div class="price-card featured">
@@ -1285,7 +1232,7 @@ footer {
         <ul class="price-features">
           <li>
             <div class="feat-check"><svg viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-            5 attempts per profession per day
+            Everything in monthly plan
           </li>
           <li>
             <div class="feat-check"><svg viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -1297,11 +1244,11 @@ footer {
           </li>
           <li>
             <div class="feat-check"><svg viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-            Your sessions and badges stay with your account
+            Data preserved forever — even if paused
           </li>
           <li>
             <div class="feat-check"><svg viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-            All 50+ professions
+            All 50 professions
           </li>
           <li>
             <div class="feat-check"><svg viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -1316,14 +1263,14 @@ footer {
             Detailed AI feedback per answer
           </li>
         </ul>
-        <button class="btn-plan primary" onclick="openPayModal('annual')">Get Started — ₹1,799/year</button>
+        <button class="btn-plan primary" onclick="handlePayment('annual')">Get Started — ₹1,799/year</button>
       </div>
     </div>
   </div>
 </section>
 
 <!-- EMPLOYER -->
-<section class="employer-section" id="employers">
+<section class="employer-section">
   <div class="employer-inner">
     <p class="section-label fade-up" style="color: rgba(255,255,255,0.4);">For Employers</p>
     <h2 class="emp-title fade-up">Find candidates who have<br>already proved themselves.</h2>
@@ -1340,11 +1287,11 @@ footer {
       </div>
       <div class="emp-feat">
         <div class="emp-feat-title">Contact candidates free</div>
-        <div class="emp-feat-desc">Reach out to any candidate directly. No commission on hiring under our current model</div>
+        <div class="emp-feat-desc">Reach out to any candidate directly. No commission on hiring — that's our current model</div>
       </div>
     </div>
 
-    <a href="/auth/login" class="btn-employer fade-up">
+    <a href="mailto:auditdesk.hq@gmail.com" class="btn-employer fade-up">
       Register as Employer — Free
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </a>
@@ -1356,7 +1303,7 @@ footer {
   <div class="footer-inner">
     <div class="footer-top">
       <div>
-        <div class="footer-logo"><span class="brand-fit">Fit</span><span class="brand-to">To</span><span class="brand-hire">Hire</span></div>
+        <div class="footer-logo">Fit<span>To</span>Hire</div>
         <div class="footer-tagline">Train. Score. Become Fit To Hire.</div>
       </div>
       <div class="footer-links">
@@ -1364,12 +1311,12 @@ footer {
           <h4>Platform</h4>
           <a href="#how-it-works">How it works</a>
           <a href="#pricing">Pricing</a>
-          <a href="#professions">50+ Professions</a>
-          <a href="#badges">Skill Badges</a>
+          <a href="#">50 Professions</a>
+          <a href="#">Skill Badges</a>
         </div>
         <div class="footer-col">
           <h4>For Employers</h4>
-          <a href="/auth/login">Register Free</a>
+          <a href="mailto:auditdesk.hq@gmail.com">Register Free</a>
           <a href="#">Browse Profiles</a>
           <a href="#">Post a Job</a>
         </div>
@@ -1382,12 +1329,12 @@ footer {
         <div class="footer-col">
           <h4>Support</h4>
           <a href="mailto:auditdesk.hq@gmail.com">auditdesk.hq@gmail.com</a>
-          <a href="mailto:auditdesk.hq@gmail.com">auditdesk.hq@gmail.com</a>
+          <a href="#">Help Center</a>
         </div>
       </div>
     </div>
     <div class="footer-bottom">
-      <div>© 2026 <span class="brand-fit">Fit</span><span class="brand-to">To</span><span class="brand-hire">Hire</span>. All rights reserved.</div>
+      <div>© 2026 FitToHire. All rights reserved.</div>
       <div class="footer-contact">
         Contact: <a href="mailto:auditdesk.hq@gmail.com">auditdesk.hq@gmail.com</a>
       </div>
@@ -1395,111 +1342,43 @@ footer {
   </div>
 </footer>
 
-<!-- PAYMENT MODAL -->
-<div class="pay-modal-bg" id="pay-modal-bg">
-  <div class="pay-modal">
-    <h3 id="modal-title">Start your subscription</h3>
-    <p>Enter your email to create your account and complete payment.</p>
-    <div class="pay-price" id="modal-price">&#8377;199<span>/month</span></div>
-    <label for="modal-email">Email address</label>
-    <input type="email" id="modal-email" placeholder="you@example.com" autocomplete="email">
-    <div class="pay-modal-btns">
-      <button class="pay-modal-cancel" onclick="closePayModal()">Cancel</button>
-      <button class="pay-modal-go" id="modal-go" onclick="proceedToPayment()">Continue to payment &#8594;</button>
-    </div>
-  </div>
-</div>
-
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
+// Scroll animations
 const observer = new IntersectionObserver((entries) => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+    }
+  });
 }, { threshold: 0.1 });
+
 document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
-let currentPlan = 'monthly';
-
-function openPayModal(plan) {
-  currentPlan = plan;
-  document.getElementById('modal-title').textContent =
-    plan === 'monthly' ? 'Start monthly plan' : 'Start annual plan';
-  document.getElementById('modal-price').innerHTML =
-    plan === 'monthly' ? '&#8377;199<span>/month</span>' : '&#8377;1,799<span>/year</span>';
-  document.getElementById('modal-email').value = '';
-  document.getElementById('pay-modal-bg').classList.add('show');
-  setTimeout(() => document.getElementById('modal-email').focus(), 100);
-}
-
-function closePayModal() {
-  document.getElementById('pay-modal-bg').classList.remove('show');
-}
-
-async function proceedToPayment() {
-  const email = document.getElementById('modal-email').value.trim();
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    alert('Please enter a valid email address.');
-    return;
-  }
-  const btn = document.getElementById('modal-go');
-  btn.disabled = true;
-  btn.textContent = 'Setting up...';
-  try {
-    const res = await fetch('/pay/subscribe/create', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        email: email,
-        user_id: 'pending',
-        plan: currentPlan === 'monthly' ? 'js_monthly' : 'js_annual'
-      })
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      alert(data.detail || 'Could not initiate payment. Please try again.');
-      btn.disabled = false;
-      btn.textContent = 'Continue to payment →';
-      return;
+// Razorpay placeholder — replace key_id with real key after approval
+function handlePayment(plan) {
+  const options = {
+    key: 'YOUR_RAZORPAY_KEY_ID',
+    amount: plan === 'monthly' ? 19900 : 179900,
+    currency: 'INR',
+    name: 'FitToHire',
+    description: plan === 'monthly' ? 'Monthly Subscription' : 'Annual Subscription',
+    image: '',
+    handler: function(response) {
+      alert('Payment successful! Welcome to FitToHire. Your account will be set up shortly.');
+    },
+    prefill: {
+      email: '',
+      contact: ''
+    },
+    theme: { color: '#1A6BFF' },
+    modal: {
+      ondismiss: function() {}
     }
-    closePayModal();
-    const options = {
-      key: data.key_id,
-      subscription_id: data.subscription_id,
-      name: 'FitToHire',
-      description: currentPlan === 'monthly'
-        ? 'Job seeker monthly — ₹199/month'
-        : 'Job seeker annual — ₹1,799/year',
-      prefill: { email: email },
-      theme: { color: '#16A34A' },
-      handler: function(response) {
-        sessionStorage.setItem('fth_pending_payment', JSON.stringify({
-          payment_id:      response.razorpay_payment_id,
-          subscription_id: response.razorpay_subscription_id,
-          signature:       response.razorpay_signature,
-          plan:            currentPlan === 'monthly' ? 'js_monthly' : 'js_annual',
-          email:           email,
-        }));
-        window.location.href = '/auth/login?email='
-          + encodeURIComponent(email) + '&paid=1&plan=' + currentPlan;
-      },
-      modal: {
-        ondismiss: function() {
-          btn.disabled = false;
-          btn.textContent = 'Continue to payment →';
-        }
-      }
-    };
-    const rzp = new Razorpay(options);
-    rzp.open();
-  } catch(e) {
-    alert('Network error. Please try again.');
-    btn.disabled = false;
-    btn.textContent = 'Continue to payment →';
-  }
+  };
+  const rzp = new Razorpay(options);
+  rzp.open();
 }
-
-document.getElementById('pay-modal-bg').addEventListener('click', function(e) {
-  if (e.target === this) closePayModal();
-});
 </script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </body>
 </html>
