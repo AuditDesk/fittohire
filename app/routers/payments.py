@@ -96,6 +96,7 @@ async def create_jobseeker_subscription(body: CreateSubscriptionRequest):
     """
     Step 1 — Create a Razorpay subscription for job seeker plans.
     Returns subscription_id + key_id to the frontend for checkout.
+    Accepts user_id='pending' for pre-signup payments from landing page.
     """
     plan_map = {
         "js_monthly": PLAN_JS_MONTHLY,
@@ -105,15 +106,18 @@ async def create_jobseeker_subscription(body: CreateSubscriptionRequest):
     if not plan_id:
         raise HTTPException(400, "Invalid plan. Use js_monthly or js_annual.")
 
+    if not plan_id:
+        raise HTTPException(500, f"Plan ID not configured for {body.plan}. Check Railway env vars.")
+
     rz = get_razorpay_client()
     try:
         sub = rz.subscription.create({
             "plan_id":         plan_id,
             "customer_notify": 1,
             "quantity":        1,
-            "total_count":     120,  # allow up to 10 years before forced renewal
+            "total_count":     120,
             "notes": {
-                "user_id": body.user_id,
+                "user_id": body.user_id,  # may be 'pending' for pre-signup
                 "plan":    body.plan,
                 "email":   body.email,
             }
@@ -124,8 +128,8 @@ async def create_jobseeker_subscription(body: CreateSubscriptionRequest):
             "plan":            body.plan,
         }
     except Exception as e:
-        logger.error(f"Razorpay subscription create failed: {e}")
-        raise HTTPException(500, "Could not create subscription. Please try again.")
+        logger.error(f"Razorpay subscription create failed: {e} | plan_id={plan_id} | key={RZP_KEY_ID[:10] if RZP_KEY_ID else 'MISSING'}")
+        raise HTTPException(500, f"Could not create subscription. Please try again.")
 
 
 @router.post("/subscribe/verify")
