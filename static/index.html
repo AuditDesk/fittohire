@@ -87,7 +87,7 @@ nav {
   letter-spacing: -0.5px;
 }
 
-.logo .brand-fit{color:#DC2626;font-weight:800}.logo .brand-to{color:#EAB308;font-weight:800}.logo .brand-hire{color:#16A34A;font-weight:800}
+.logo .brand-fit{color:#DC2626 !important;font-weight:800}.logo .brand-to{color:#EAB308 !important;font-weight:800}.logo .brand-hire{color:#16A34A !important;font-weight:800}
 
 .nav-signin {
   color: var(--ink); padding: 9px 20px; border-radius: 6px;
@@ -1383,15 +1383,15 @@ footer {
         </div>
         <div class="footer-col">
           <h4>Support</h4>
-          <a href="mailto:auditdesk.hq@gmail.com">auditdesk.hq@gmail.com</a>
-          <a href="mailto:auditdesk.hq@gmail.com">Help Center</a>
+          <a href="/cdn-cgi/l/email-protection#4b2a3e2f223f2f2e382065233a0b2c262a222765282426"><span class="__cf_email__" data-cfemail="0f6e7a6b667b6b6a7c6421677e4f68626e6663216c6062">[email&#160;protected]</span></a>
+          <a href="/cdn-cgi/l/email-protection#b4d5c1d0ddc0d0d1c7df9adcc5f4d3d9d5ddd89ad7dbd9">Help Center</a>
         </div>
       </div>
     </div>
     <div class="footer-bottom">
       <div>© 2026 <span class="brand-fit">Fit</span><span class="brand-to">To</span><span class="brand-hire">Hire</span>. All rights reserved.</div>
       <div class="footer-contact">
-        Contact: <a href="mailto:auditdesk.hq@gmail.com">auditdesk.hq@gmail.com</a>
+        Contact: <a href="/cdn-cgi/l/email-protection#6c0d1908051808091f0742041d2c0b010d0500420f0301"><span class="__cf_email__" data-cfemail="731206171a07171600185d1b0233141e121a1f5d101c1e">[email&#160;protected]</span></a>
       </div>
     </div>
   </div>
@@ -1412,7 +1412,7 @@ footer {
 </div>
 
 
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
@@ -1473,23 +1473,4 @@ async function proceedToPayment() {
       },
       modal: {
         ondismiss: function() {
-          btn.disabled = false;
-          btn.textContent = 'Continue to payment →';
-        }
-      }
-    };
-    const rzp = new Razorpay(options);
-    rzp.open();
-  } catch(e) {
-    alert('Network error. Please try again.');
-    btn.disabled = false;
-    btn.textContent = 'Continue to payment →';
-  }
-}
-
-document.getElementById('pay-modal-bg').addEventListener('click', function(e) {
-  if (e.target === this) closePayModal();
-});
-</script>
-</body>
-</html>
+          btn.disabled = fa
