@@ -34,9 +34,7 @@
 <link rel="sitemap" type="application/xml" href="/sitemap.xml">
 
 <!-- Fonts -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap&font-display=swap" rel="stylesheet">
+<!-- No external fonts — using system fonts for instant rendering -->
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -51,8 +49,8 @@
   --accent2: #FF4D1C;
   --green: #00A86B;
   --gold: #F5A623;
-  --display: 'Syne', 'Arial Black', Georgia, serif;
-  --body: 'DM Sans', sans-serif;
+  --display: -apple-system, 'Segoe UI', system-ui, 'Helvetica Neue', Arial, sans-serif;
+  --body: -apple-system, 'Segoe UI', system-ui, 'Helvetica Neue', Arial, sans-serif;
 }
 
 html { scroll-behavior: smooth; }
@@ -1383,19 +1381,20 @@ footer {
         </div>
         <div class="footer-col">
           <h4>Support</h4>
-          <a href="/cdn-cgi/l/email-protection#4b2a3e2f223f2f2e382065233a0b2c262a222765282426"><span class="__cf_email__" data-cfemail="0f6e7a6b667b6b6a7c6421677e4f68626e6663216c6062">[email&#160;protected]</span></a>
-          <a href="/cdn-cgi/l/email-protection#b4d5c1d0ddc0d0d1c7df9adcc5f4d3d9d5ddd89ad7dbd9">Help Center</a>
+          <a href="mailto:auditdesk.hq@gmail.com">auditdesk.hq@gmail.com</a>
+          <a href="mailto:auditdesk.hq@gmail.com">auditdesk.hq@gmail.com</a>
         </div>
       </div>
     </div>
     <div class="footer-bottom">
       <div>© 2026 <span class="brand-fit">Fit</span><span class="brand-to">To</span><span class="brand-hire">Hire</span>. All rights reserved.</div>
       <div class="footer-contact">
-        Contact: <a href="/cdn-cgi/l/email-protection#6c0d1908051808091f0742041d2c0b010d0500420f0301"><span class="__cf_email__" data-cfemail="731206171a07171600185d1b0233141e121a1f5d101c1e">[email&#160;protected]</span></a>
+        Contact: <a href="mailto:auditdesk.hq@gmail.com">auditdesk.hq@gmail.com</a>
       </div>
     </div>
   </div>
 </footer>
+
 <!-- PAYMENT MODAL -->
 <div class="pay-modal-bg" id="pay-modal-bg">
   <div class="pay-modal">
@@ -1411,8 +1410,7 @@ footer {
   </div>
 </div>
 
-
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
@@ -1423,8 +1421,10 @@ let currentPlan = 'monthly';
 
 function openPayModal(plan) {
   currentPlan = plan;
-  document.getElementById('modal-title').textContent = plan === 'monthly' ? 'Start monthly plan' : 'Start annual plan';
-  document.getElementById('modal-price').innerHTML = plan === 'monthly' ? '&#8377;199<span>/month</span>' : '&#8377;1,799<span>/year</span>';
+  document.getElementById('modal-title').textContent =
+    plan === 'monthly' ? 'Start monthly plan' : 'Start annual plan';
+  document.getElementById('modal-price').innerHTML =
+    plan === 'monthly' ? '&#8377;199<span>/month</span>' : '&#8377;1,799<span>/year</span>';
   document.getElementById('modal-email').value = '';
   document.getElementById('pay-modal-bg').classList.add('show');
   setTimeout(() => document.getElementById('modal-email').focus(), 100);
@@ -1465,11 +1465,12 @@ async function proceedToPayment() {
       key: data.key_id,
       subscription_id: data.subscription_id,
       name: 'FitToHire',
-      description: currentPlan === 'monthly' ? 'Job seeker monthly — ₹199/month' : 'Job seeker annual — ₹1,799/year',
+      description: currentPlan === 'monthly'
+        ? 'Job seeker monthly — ₹199/month'
+        : 'Job seeker annual — ₹1,799/year',
       prefill: { email: email },
       theme: { color: '#16A34A' },
       handler: function(response) {
-        // Store payment details temporarily — will be verified after login
         sessionStorage.setItem('fth_pending_payment', JSON.stringify({
           payment_id:      response.razorpay_payment_id,
           subscription_id: response.razorpay_subscription_id,
@@ -1477,9 +1478,28 @@ async function proceedToPayment() {
           plan:            currentPlan === 'monthly' ? 'js_monthly' : 'js_annual',
           email:           email,
         }));
-        // Redirect to login — after login, /auth/callback will activate subscription
-        window.location.href = '/auth/login?email=' + encodeURIComponent(email) + '&paid=1&plan=' + currentPlan;
+        window.location.href = '/auth/login?email='
+          + encodeURIComponent(email) + '&paid=1&plan=' + currentPlan;
       },
       modal: {
         ondismiss: function() {
-          btn.disabled = fa
+          btn.disabled = false;
+          btn.textContent = 'Continue to payment →';
+        }
+      }
+    };
+    const rzp = new Razorpay(options);
+    rzp.open();
+  } catch(e) {
+    alert('Network error. Please try again.');
+    btn.disabled = false;
+    btn.textContent = 'Continue to payment →';
+  }
+}
+
+document.getElementById('pay-modal-bg').addEventListener('click', function(e) {
+  if (e.target === this) closePayModal();
+});
+</script>
+</body>
+</html>
