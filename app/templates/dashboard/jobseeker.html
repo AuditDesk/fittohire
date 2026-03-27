@@ -78,13 +78,19 @@
     .ptxt span{font-size:12px;color:var(--muted)}
     .plink{font-size:13px;color:var(--green);text-decoration:none;padding:6px 14px;border:1px solid var(--green);border-radius:8px;white-space:nowrap}
     .plink:hover{background:var(--green-bg)}
+
+    
+
+    .brand-fit  { color: #DC2626; font-weight: 700; }
+    .brand-to   { color: #EAB308; font-weight: 700; }
+    .brand-hire { color: #16A34A; font-weight: 700; }
   </style>
 </head>
 <body>
 <nav>
   <a href="/" class="logo">
     <div class="logo-mark"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-    Fit<span>To</span>Hire
+    <span class="brand-fit">Fit</span><span class="brand-to">To</span><span class="brand-hire">Hire</span>
   </a>
   <div class="nav-r">
     <span class="nav-email">{{ user.email }}</span>
