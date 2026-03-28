@@ -85,6 +85,25 @@
       .profile-actions{margin-left:0;flex-direction:row;}
       .page{padding:1.5rem 1rem 3rem;}
     }
+  
+@media (max-width: 600px) {
+  .page { padding: 1.25rem 1rem 3rem; }
+  .profile-header { flex-direction: column; gap: 1rem; padding: 1.25rem; }
+  .profile-actions { margin-left: 0; flex-direction: row; flex-wrap: wrap; }
+  .btn-contact, .btn-copy { flex: 1; text-align: center; }
+  .profile-stats { gap: 12px; }
+  .employer-cta-btns { flex-direction: column; }
+  .btn-emp-free, .btn-emp-paid { width: 100%; text-align: center; }
+  nav { padding: 0 1rem; }
+}
+
+
+    .avail-badge { display:inline-flex; align-items:center; gap:6px; padding:5px 14px; border-radius:99px; font-size:12px; font-weight:600; margin-top:8px; }
+    .avail-active { background:#DCFCE7; color:#166534; }
+    .avail-open   { background:#DBEAFE; color:#1e40af; }
+    .avail-not    { background:#F3F4F6; color:#6B7280; }
+    .notice-tag   { display:inline-flex; align-items:center; gap:5px; font-size:12px; color:var(--muted); margin-top:4px; margin-left:8px; }
+
   </style>
 </head>
 <body>
@@ -140,6 +159,23 @@
       {% if profile.location %} · {{ profile.location }}{% endif %}
     </div>
     <div class="verified-badge">✓ Verified by FitToHire AI</div>
+
+      {% if profile.availability_status == 'actively_looking' %}
+      <div class="avail-badge avail-active">🟢 Actively looking</div>
+      {% elif profile.availability_status == 'open' %}
+      <div class="avail-badge avail-open">🔵 Open to opportunities</div>
+      {% elif profile.availability_status == 'not_looking' %}
+      <div class="avail-badge avail-not">⚪ Not looking right now</div>
+      {% endif %}
+      {% if profile.available_from %}
+      <span class="notice-tag">📅 Available from {{ profile.available_from }}</span>
+      {% endif %}
+      {% if profile.notice_period_days == 0 %}
+      <span class="notice-tag">⚡ Immediate joiner</span>
+      {% elif profile.notice_period_days %}
+      <span class="notice-tag">📋 {{ profile.notice_period_days }}-day notice period</span>
+      {% endif %}
+
     <div class="profile-stats">
       <div class="pstat">
         <div class="pstat-val">{{ profile.best_overall }}%</div>
@@ -161,7 +197,7 @@
   </div>
   <div class="profile-actions">
     {% if profile.show_contact and profile.email %}
-    <a href="mailto:auditdesk.hq@gmail.com">auditdesk.hq@gmail.com</a>
+    <a href="/cdn-cgi/l/email-protection#86e7f3e2eff2e2e3f5eda8eef7c6e1ebe7efeaa8e5e9eb"><span class="__cf_email__" data-cfemail="640511000d100001170f4a0c15240309050d084a070b09">[email&#160;protected]</span></a>
     {% endif %}
     <button class="btn-copy" onclick="copyLink()">🔗 Copy profile link</button>
   </div>
@@ -246,9 +282,14 @@
 
 <div class="toast" id="toast">Profile link copied!</div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 function copyLink() {
   navigator.clipboard.writeText(window.location.href).then(() => {
     const t = document.getElementById('toast');
     t.classList.add('show');
-    se
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }).catch(() => { prompt('Copy this link:', window.location.href); });
+}
+</script>
+</body>
+</html>
