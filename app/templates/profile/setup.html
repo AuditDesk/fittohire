@@ -70,7 +70,18 @@
     .profile-link-url { font-size:13px; color:var(--green); font-weight:500; }
     .copy-btn { font-size:12px; padding:5px 12px; border:1px solid var(--border); border-radius:8px; background:var(--white); cursor:pointer; font-family:inherit; white-space:nowrap; }
     .copy-btn:hover { background:var(--cream); }
-  </style>
+  
+@media (max-width: 600px) {
+  .page { padding: 1.5rem 1rem 3rem; }
+  .card { padding: 18px; }
+  .slug-wrap { flex-direction: column; }
+  .slug-prefix { border-right: none; border-bottom: 1px solid var(--border); border-radius: 10px 10px 0 0; width: 100%; }
+  .slug-wrap input { border-radius: 0 0 10px 10px; }
+  nav { padding: 0 1rem; }
+  .save-btn { font-size: 15px; padding: 14px; }
+}
+
+</style>
 </head>
 <body>
 
@@ -196,6 +207,38 @@
     </div>
   </div>
 
+
+  <!-- Availability -->
+  <div class="card">
+    <div class="card-title">Availability</div>
+    <div class="field">
+      <label for="availability_status">I am currently</label>
+      <select id="availability_status">
+        <option value="actively_looking" {{ 'selected' if profile.availability_status == 'actively_looking' else '' }}>Actively looking for a job</option>
+        <option value="open" {{ 'selected' if profile.availability_status == 'open' or not profile.availability_status else '' }}>Open to opportunities</option>
+        <option value="not_looking" {{ 'selected' if profile.availability_status == 'not_looking' else '' }}>Not looking right now</option>
+      </select>
+      <div class="field-hint">This shows as a badge on your public profile. Employers filter by this.</div>
+    </div>
+    <div class="field" id="available-from-field">
+      <label for="available_from">Available from <span style="color:var(--muted);font-weight:400">(optional)</span></label>
+      <input type="date" id="available_from" value="{{ profile.available_from or '' }}">
+      <div class="field-hint">Leave blank if you can join immediately. Set a date if you are serving a notice period.</div>
+    </div>
+    <div class="field" id="notice-period-field">
+      <label for="notice_period_days">Notice period <span style="color:var(--muted);font-weight:400">(optional)</span></label>
+      <select id="notice_period_days">
+        <option value="">Select notice period</option>
+        <option value="0" {{ 'selected' if profile.notice_period_days == 0 else '' }}>Immediate joiner</option>
+        <option value="15" {{ 'selected' if profile.notice_period_days == 15 else '' }}>15 days</option>
+        <option value="30" {{ 'selected' if profile.notice_period_days == 30 else '' }}>30 days</option>
+        <option value="60" {{ 'selected' if profile.notice_period_days == 60 else '' }}>60 days</option>
+        <option value="90" {{ 'selected' if profile.notice_period_days == 90 else '' }}>90 days</option>
+      </select>
+      <div class="field-hint">Employers in India specifically look for this. Immediate joiners get more attention.</div>
+    </div>
+  </div>
+
   <button class="save-btn" id="save-btn" onclick="saveProfile()">Save profile</button>
 </div>
 
@@ -203,6 +246,17 @@
 const PROFESSIONS = {{ professions | tojson }};
 let slugAvailable = {{ 'true' if profile.public_slug else 'false' }};
 let slugCheckTimer = null;
+
+
+// Show/hide availability fields based on status
+function updateAvailFields() {
+  const status = document.getElementById('availability_status').value;
+  const notLooking = status === 'not_looking';
+  document.getElementById('available-from-field').style.opacity = notLooking ? '0.4' : '1';
+  document.getElementById('notice-period-field').style.opacity = notLooking ? '0.4' : '1';
+}
+document.getElementById('availability_status').addEventListener('change', updateAvailFields);
+updateAvailFields();
 
 document.getElementById('profession').addEventListener('change', function() {
   const customField = document.getElementById('custom-prof-field');
@@ -268,6 +322,9 @@ async function saveProfile() {
         linkedin_url:       document.getElementById('linkedin').value.trim(),
         show_contact:       document.getElementById('show_contact').checked,
         profile_visibility: document.getElementById('is_public').checked ? 'public' : 'private',
+        availability_status:  document.getElementById('availability_status').value,
+        available_from:       document.getElementById('available_from').value || null,
+        notice_period_days:   document.getElementById('notice_period_days').value ? parseInt(document.getElementById('notice_period_days').value) : null,
       })
     });
     const data = await res.json();
