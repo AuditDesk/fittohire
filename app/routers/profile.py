@@ -165,7 +165,10 @@ async def public_profile(request: Request, slug: str):
         "badge_count":     len(badges),
         "profession_count": len(profession_scores),
         "show_contact":    profile_data.get("show_contact", False),
-        "is_private":      is_private,
+        "is_private":          is_private,
+        "availability_status": profile_data.get("availability_status", "open"),
+        "available_from":      profile_data.get("available_from", ""),
+        "notice_period_days":  profile_data.get("notice_period_days"),
     }
 
     return templates.TemplateResponse(
@@ -272,7 +275,10 @@ class ProfileSaveRequest(BaseModel):
     bio:                Optional[str] = ""
     linkedin_url:       Optional[str] = ""
     show_contact:       bool = False
-    profile_visibility: str = "public"
+    profile_visibility:   str = "public"
+    availability_status:  Optional[str] = "open"
+    available_from:       Optional[str] = None
+    notice_period_days:   Optional[int] = None
 
 
 @router.post("/profile/save")
@@ -303,7 +309,10 @@ async def save_profile(body: ProfileSaveRequest, request: Request):
             "linkedin_url":       body.linkedin_url,
             "show_contact":       body.show_contact,
             "profile_visibility": body.profile_visibility,
-            "updated_at":         now,
+            "availability_status": body.availability_status or "open",
+            "available_from":       body.available_from,
+            "notice_period_days":   body.notice_period_days,
+            "updated_at":           now,
         }, on_conflict="user_id").execute()
 
         # Update users table with name and phone
