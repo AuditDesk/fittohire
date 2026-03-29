@@ -7,3 +7,4 @@ razorpay
 httpx
 pydantic[email]
 anthropic
+reportlab
