@@ -901,3 +901,184 @@ async def close_job(job_id: str, request: Request):
     except Exception as e:
         logger.error(f"Job close error: {e}")
         raise HTTPException(500, "Could not close job post.")
+
+
+# ── Answer view route ─────────────────────────────────────────────────
+
+@router.get("/candidate/{candidate_id}/answers/{session_id}")
+async def view_answers(candidate_id: str, session_id: str, request: Request):
+    """
+    Subscribed employer reads a candidate's actual interview answers.
+    Also records a 'view' interaction for the candidate's notification feed.
+    """
+    user = await get_employer_user(request)
+    if not user:
+        return RedirectResponse(f"/auth/login?next=/employer/candidate/{candidate_id}/answers/{session_id}")
+
+    supabase = get_supabase()
+    is_subscribed = await check_employer_subscription(user["id"], supabase)
+
+    # Get candidate profile
+    candidate = {}
+    try:
+        profile = supabase.table("jobseeker_profiles") \
+            .select("*").eq("user_id", candidate_id).limit(1).execute()
+        u = supabase.table("users") \
+            .select("email, full_name").eq("id", candidate_id).limit(1).execute()
+
+        p = profile.data[0] if profile.data else {}
+        ud = u.data[0] if u.data else {}
+        name = p.get("full_name") or ud.get("full_name", "")
+        email = ud.get("email", "")
+
+        candidate = {
+            "user_id":      candidate_id,
+            "slug":         p.get("public_slug", ""),
+            "name":         name or email.split("@")[0].title(),
+            "initials":     initials(name, email),
+            "email":        email if p.get("show_contact") else None,
+            "show_contact": p.get("show_contact", False),
+            "profession":   p.get("profession", ""),
+            "location":     p.get("location", ""),
+            "availability": p.get("availability_status", "open"),
+        }
+    except Exception as e:
+        logger.error(f"Candidate fetch error: {e}")
+
+    if not is_subscribed:
+        return templates.TemplateResponse(
+            request=request,
+            name="employer/answers.html",
+            context={
+                "candidate":     candidate,
+                "is_subscribed": False,
+                "sessions":      [],
+                "answers":       [],
+                "current_session": {},
+                "is_shortlisted": False,
+                "employer_note":  "",
+            }
+        )
+
+    # Record view interaction (non-blocking, ignore errors)
+    try:
+        employer_name = ""
+        ep = supabase.table("employer_profiles") \
+            .select("company_name").eq("user_id", user["id"]).limit(1).execute()
+        if ep.data:
+            employer_name = ep.data[0].get("company_name", "")
+
+        supabase.table("employer_interactions").upsert({
+            "employer_id":   user["id"],
+            "candidate_id":  candidate_id,
+            "interaction":   "view",
+            "employer_name": employer_name,
+            "created_at":    datetime.now(timezone.utc).isoformat(),
+        }, on_conflict="employer_id,candidate_id,interaction").execute()
+    except Exception as e:
+        logger.error(f"View record error: {e}")
+
+    # Get all completed sessions for this candidate
+    sessions = []
+    current_session = {}
+    try:
+        all_sessions = supabase.table("interview_sessions") \
+            .select("id, profession, score, question_count, badge_label, completed_at, score_breakdown") \
+            .eq("user_id", candidate_id) \
+            .eq("status", "completed") \
+            .order("completed_at", desc=True).execute()
+
+        for s in (all_sessions.data or []):
+            date_str = ""
+            try:
+                dt = datetime.fromisoformat(s["completed_at"].replace("Z", "+00:00"))
+                date_str = dt.strftime("%d %b")
+            except Exception:
+                pass
+
+            session_obj = {
+                "id":             s["id"],
+                "profession":     s.get("profession", ""),
+                "score":          s.get("score", 0),
+                "question_count": s.get("question_count", 10),
+                "badge_label":    s.get("badge_label", ""),
+                "date":           date_str,
+                "breakdown":      s.get("score_breakdown") or {},
+            }
+            sessions.append(session_obj)
+            if s["id"] == session_id:
+                current_session = session_obj
+
+        if not current_session and sessions:
+            current_session = sessions[0]
+
+    except Exception as e:
+        logger.error(f"Sessions fetch error: {e}")
+
+    # Get answers for current session
+    answers = []
+    liked_indices = set()
+    try:
+        # Get liked answer indices
+        likes = supabase.table("employer_interactions") \
+            .select("answer_index") \
+            .eq("employer_id", user["id"]) \
+            .eq("candidate_id", candidate_id) \
+            .eq("interaction", "like_answer").execute()
+        liked_indices = {l["answer_index"] for l in (likes.data or []) if l.get("answer_index") is not None}
+
+        # Get answers
+        ans = supabase.table("interview_answers") \
+            .select("question, answer, score, score_breakdown") \
+            .eq("session_id", current_session.get("id", session_id)) \
+            .order("question_index").execute()
+
+        for i, a in enumerate(ans.data or []):
+            answers.append({
+                "question":        a.get("question", ""),
+                "answer":          a.get("answer", ""),
+                "score":           a.get("score"),
+                "score_breakdown": a.get("score_breakdown") or {},
+                "is_liked":        i in liked_indices,
+            })
+    except Exception as e:
+        logger.error(f"Answers fetch error: {e}")
+
+    # Check if shortlisted
+    is_shortlisted = False
+    try:
+        sl = supabase.table("employer_interactions") \
+            .select("id") \
+            .eq("employer_id", user["id"]) \
+            .eq("candidate_id", candidate_id) \
+            .eq("interaction", "shortlist").limit(1).execute()
+        is_shortlisted = bool(sl.data)
+    except Exception:
+        pass
+
+    # Get employer's note on this candidate
+    employer_note = ""
+    try:
+        note = supabase.table("employer_interactions") \
+            .select("note_text") \
+            .eq("employer_id", user["id"]) \
+            .eq("candidate_id", candidate_id) \
+            .eq("interaction", "note").limit(1).execute()
+        if note.data:
+            employer_note = note.data[0].get("note_text", "")
+    except Exception:
+        pass
+
+    return templates.TemplateResponse(
+        request=request,
+        name="employer/answers.html",
+        context={
+            "candidate":       candidate,
+            "is_subscribed":   is_subscribed,
+            "sessions":        sessions,
+            "current_session": current_session,
+            "answers":         answers,
+            "is_shortlisted":  is_shortlisted,
+            "employer_note":   employer_note,
+        }
+    )
