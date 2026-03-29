@@ -1,47 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Terms of Service — FitToHire</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root { --ink: #0D0D0D; --muted: #6B6B6B; --line: #E8E8E4; --cream: #F9F8F4; --accent: #1A6BFF; }
-body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); }
-nav { padding: 18px 48px; border-bottom: 1px solid var(--line); background: white; display: flex; justify-content: space-between; align-items: center; }
-.logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; text-decoration: none; color: var(--ink); }
-.logo span { color: var(--accent); }
-.content { max-width: 760px; margin: 60px auto; padding: 0 24px 80px; }
-h1 { font-family: 'Syne', sans-serif; font-size: 36px; font-weight: 800; letter-spacing: -1px; margin-bottom: 8px; }
-.date { font-size: 13px; color: var(--muted); margin-bottom: 40px; }
-h2 { font-size: 18px; font-weight: 600; margin: 32px 0 12px; }
-p { font-size: 15px; color: #3A3A3A; line-height: 1.8; margin-bottom: 16px; }
-a { color: var(--accent); }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms of Service — FitToHire</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --border:#E5E7EB; --text:#111827; --muted:#6B7280; --white:#fff; --cream:#F9FAFB; --green:#16A34A; }
+    body { font-family:-apple-system,'Segoe UI',system-ui,Arial,sans-serif; background:var(--cream); color:var(--text); min-height:100vh; }
+    .brand-fit{color:#DC2626!important;font-weight:800}
+    .brand-to{color:#EAB308!important;font-weight:800}
+    .brand-hire{color:#16A34A!important;font-weight:800}
+    nav { background:var(--white); border-bottom:1px solid var(--border); padding:0 2rem; height:56px; display:flex; align-items:center; justify-content:space-between; }
+    .nav-logo { display:inline-flex; align-items:center; gap:9px; text-decoration:none; }
+    .nav-logo-text { font-family:-apple-system,'Segoe UI',system-ui,'Arial Black',Arial,sans-serif; font-weight:800; font-size:22px; letter-spacing:-0.5px; display:inline-flex; }
+    .nav-back { font-size:13px; color:var(--muted); text-decoration:none; }
+    .nav-back:hover { color:var(--text); }
+    .page { max-width:760px; margin:0 auto; padding:3rem 2rem 5rem; }
+    .page-title { font-size:28px; font-weight:700; margin-bottom:6px; }
+    .page-date { font-size:13px; color:var(--muted); margin-bottom:2.5rem; }
+    h2 { font-size:17px; font-weight:600; margin:2rem 0 10px; color:var(--text); }
+    p { font-size:15px; color:#374151; line-height:1.8; margin-bottom:12px; }
+    ul { font-size:15px; color:#374151; line-height:1.8; margin:0 0 12px 1.5rem; }
+    li { margin-bottom:6px; }
+    a { color:var(--green); }
+    .contact-box { background:var(--white); border:1px solid var(--border); border-radius:12px; padding:20px 24px; margin-top:2rem; }
+    .contact-box p { margin:0; }
+    @media(max-width:600px){ nav{padding:0 1rem;} .page{padding:2rem 1rem 4rem;} .nav-logo-text{font-size:18px!important;} }
+  </style>
 </head>
 <body>
-<nav><a href="/" class="logo">Fit<span>To</span>Hire</a><a href="/" style="font-size:14px;color:#6B6B6B;text-decoration:none;">← Back to Home</a></nav>
-<div class="content">
-<h1>Terms of Service</h1>
-<p class="date">Effective Date: March 25, 2026</p>
-<p>By accessing or using FitToHire at fittohire.in, you agree to these Terms of Service. Please read them carefully.</p>
-<h2>Service Description</h2>
-<p>FitToHire is an AI-powered interview preparation platform. We provide mock interview sessions, AI-based answer scoring, skill badges, and a public proof profile for job seekers across 50 professions.</p>
-<h2>Subscriptions</h2>
-<p>FitToHire offers monthly (₹199/month) and annual (₹1,799/year) subscription plans. Subscriptions are billed in advance. Access to the platform's interview features requires an active subscription.</p>
-<h2>Account and Data</h2>
-<p>Your account data, scores, badges and uploaded files are preserved permanently — even if your subscription is paused. You may resubscribe at any time to regain full access. Data is only deleted upon your explicit written request.</p>
-<h2>Acceptable Use</h2>
-<p>You agree not to misuse the platform, share account credentials, attempt to manipulate AI scoring, or upload false or misleading documents to your profile.</p>
-<h2>For Employers</h2>
-<p>Employer registration and browsing of candidate profiles is free. Contacting candidates and hiring through the platform is free with no commission. Job posting features, when available, will be charged separately per posting.</p>
-<h2>Intellectual Property</h2>
-<p>The FitToHire platform, its design, and AI systems are owned by FitToHire. Your personal data, uploaded documents, and interview responses remain yours.</p>
-<h2>Limitation of Liability</h2>
-<p>FitToHire does not guarantee employment outcomes. We provide tools and preparation — the outcome of any job interview or hiring decision is beyond our control.</p>
-<h2>Contact</h2>
-<p>For any queries, email <a href="mailto:auditdesk.hq@gmail.com">auditdesk.hq@gmail.com</a>.</p>
+<nav>
+  <a href="/" class="nav-logo">
+    <svg width="32" height="32" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;display:block;">
+      <defs>
+        <radialGradient id="r1" cx="38%" cy="30%" r="62%"><stop offset="0%" stop-color="#ff8080"/><stop offset="38%" stop-color="#DC2626"/><stop offset="100%" stop-color="#6b0000"/></radialGradient>
+        <radialGradient id="a1" cx="38%" cy="30%" r="62%"><stop offset="0%" stop-color="#fef08a"/><stop offset="38%" stop-color="#EAB308"/><stop offset="100%" stop-color="#4a2800"/></radialGradient>
+        <radialGradient id="g1" cx="38%" cy="30%" r="62%"><stop offset="0%" stop-color="#86efac"/><stop offset="38%" stop-color="#16A34A"/><stop offset="100%" stop-color="#022c16"/></radialGradient>
+      </defs>
+      <rect x="4" y="4" width="248" height="248" rx="52" fill="#1a1a1a"/>
+      <rect x="28" y="28" width="200" height="200" rx="28" fill="#0d0d0d"/>
+      <circle cx="128" cy="74" r="46" fill="url(#r1)"/><circle cx="128" cy="74" r="23" fill="#ff6060" opacity="0.35"/><circle cx="128" cy="74" r="9" fill="white" opacity="0.72"/>
+      <circle cx="128" cy="128" r="46" fill="url(#a1)"/><circle cx="128" cy="128" r="23" fill="#fde047" opacity="0.35"/><circle cx="128" cy="128" r="9" fill="white" opacity="0.72"/>
+      <circle cx="128" cy="182" r="46" fill="url(#g1)"/><circle cx="128" cy="182" r="23" fill="#4ade80" opacity="0.35"/><circle cx="128" cy="182" r="9" fill="white" opacity="0.72"/>
+    </svg>
+    <span class="nav-logo-text"><span class="brand-fit">Fit</span><span class="brand-to">To</span><span class="brand-hire">Hire</span></span>
+  </a>
+  <a href="/" class="nav-back">← Back to home</a>
+</nav>
+
+<div class="page">
+  <div class="page-title">Terms of Service</div>
+  <div class="page-date">Last updated: 29 March 2026</div>
+
+  <p>These Terms of Service ("Terms") govern your use of FitToHire (fittohire.in), operated by Audit Desk ("we", "us"). By creating an account or using FitToHire, you agree to these Terms.</p>
+
+  <h2>1. What FitToHire is</h2>
+  <p>FitToHire is an AI-powered interview preparation and talent discovery platform. Job seekers practice mock interviews, earn verified scores and badges, and build public proof profiles. Employers browse and contact verified candidates directly.</p>
+  <p>FitToHire is not a recruitment agency. We do not guarantee employment or hiring outcomes. We provide a platform — the hiring decision is always between the employer and the candidate.</p>
+
+  <h2>2. Eligibility</h2>
+  <p>You must be at least 18 years old to use FitToHire. By using the platform you confirm that you meet this requirement. One email address may be registered as either a job seeker or an employer — not both simultaneously.</p>
+
+  <h2>3. Account responsibility</h2>
+  <p>You are responsible for maintaining the confidentiality of your account. FitToHire uses magic link authentication — no passwords are stored. You are responsible for all activity that occurs under your account. If you suspect unauthorised access, contact us immediately at auditdesk.hq@gmail.com.</p>
+
+  <h2>4. Job seeker terms</h2>
+  <ul>
+    <li>Your interview answers must be your own genuine responses. Submitting AI-generated or copied answers is a violation of these Terms.</li>
+    <li>Your public profile, scores and answers may be visible to employers. You control this through your profile privacy settings.</li>
+    <li>Daily attempt limits apply based on your subscription plan (2 per profession for monthly, 5 for annual).</li>
+    <li>Badges and certificates reflect your actual performance on FitToHire and are not guaranteed to be accepted by any employer.</li>
+    <li>You may set your profile to private at any time. Private profiles are not visible to employers.</li>
+  </ul>
+
+  <h2>5. Employer terms</h2>
+  <ul>
+    <li>Employers may browse and contact candidates whose profiles are public and who have enabled contact visibility.</li>
+    <li>Employer contact with candidates must be professional and lawful. Harassment, spam or discriminatory contact is strictly prohibited.</li>
+    <li>Job posts must be for genuine employment opportunities. Fake or misleading job posts will be removed.</li>
+    <li>Subscribed employers may read candidate interview answers solely for the purpose of making hiring decisions.</li>
+    <li>Candidate data accessed through FitToHire may not be shared with third parties or used for any purpose other than hiring.</li>
+    <li>Active job posts are capped at 30 simultaneously under our current model.</li>
+  </ul>
+
+  <h2>6. Subscriptions and payments</h2>
+  <p>Subscriptions are billed as described on our pricing page. Payments are processed by Razorpay. By subscribing you authorise recurring charges at the stated frequency until you cancel.</p>
+  <p>Job post fees (₹499 per post) are one-time charges for 30 days of active listing. These are non-refundable once the post goes live.</p>
+  <p>See our <a href="/refund">Refund Policy</a> for full details on cancellations and refunds.</p>
+
+  <h2>7. Prohibited conduct</h2>
+  <p>You agree not to:</p>
+  <ul>
+    <li>Submit false, misleading or AI-generated interview answers to inflate your scores</li>
+    <li>Create multiple accounts to circumvent attempt limits or other restrictions</li>
+    <li>Attempt to reverse-engineer, scrape or copy the platform or its data</li>
+    <li>Use FitToHire to distribute spam, malware or illegal content</li>
+    <li>Impersonate another person or organisation</li>
+    <li>Post job listings for fraudulent, illegal or discriminatory purposes</li>
+    <li>Harass or discriminate against candidates or employers</li>
+  </ul>
+
+  <h2>8. AI scoring disclaimer</h2>
+  <p>Interview scores on FitToHire are generated by AI and reflect performance on our platform's specific questions at a specific point in time. Scores are a useful signal but are not a guarantee of job performance or employment suitability. Employers are encouraged to treat FitToHire scores as one data point among many — not as a definitive assessment.</p>
+
+  <h2>9. Intellectual property</h2>
+  <p>The FitToHire platform, logo, brand and all content created by us are our intellectual property. Your interview answers and profile content remain yours. By submitting content to FitToHire you grant us a licence to display it on the platform and use it to improve our AI models.</p>
+
+  <h2>10. Limitation of liability</h2>
+  <p>FitToHire is provided "as is". We are not liable for any indirect, incidental or consequential damages arising from your use of the platform, including but not limited to missed employment opportunities, reliance on AI scores, or data loss.</p>
+  <p>Our total liability to you for any claim arising from use of FitToHire shall not exceed the amount you paid us in the 3 months prior to the claim.</p>
+
+  <h2>11. Termination</h2>
+  <p>We reserve the right to suspend or terminate accounts that violate these Terms, without prior notice. You may delete your account at any time by contacting auditdesk.hq@gmail.com.</p>
+
+  <h2>12. Governing law</h2>
+  <p>These Terms are governed by the laws of India. Any disputes shall be subject to the exclusive jurisdiction of the courts of Tamil Nadu, India.</p>
+
+  <h2>13. Changes to these Terms</h2>
+  <p>We may update these Terms from time to time. Continued use of FitToHire after changes constitutes acceptance of the updated Terms. We will notify registered users of significant changes by email.</p>
+
+  <div class="contact-box">
+    <p><strong>Questions about these Terms?</strong> Contact us at <a href="mailto:auditdesk.hq@gmail.com">auditdesk.hq@gmail.com</a></p>
+  </div>
 </div>
 </body>
 </html>
