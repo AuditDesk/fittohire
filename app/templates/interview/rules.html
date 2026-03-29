@@ -6,8 +6,7 @@
   <title>Before You Begin — FitToHire</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@900&display=swap');
-  .fth-logo { display:inline-flex; align-items:center; gap:10px; text-decoration:none; }
+.fth-logo { display:inline-flex; align-items:center; gap:10px; text-decoration:none; }
   .fth-logo-text { font-family:'Poppins','Arial Black',sans-serif; font-weight:900; font-size:22px; letter-spacing:-0.5px; line-height:1; filter:drop-shadow(1px 2px 3px rgba(0,0,0,0.22)); display:inline-flex; }
   .fth-logo-text .f { color:#DC2626; -webkit-text-stroke:0.5px #7f0000; text-shadow:1px 1px 0 #7f0000; }
   .fth-logo-text .t { color:#EAB308; -webkit-text-stroke:0.5px #713f12; text-shadow:1px 1px 0 #713f12; }
@@ -43,7 +42,17 @@
     .brand-fit  { color: #DC2626 !important; font-weight: 800; }
     .brand-to   { color: #EAB308 !important; font-weight: 800; }
     .brand-hire { color: #16A34A !important; font-weight: 800; }
-  </style>
+  
+@media (max-width: 600px) {
+  .page { padding: 1.5rem 1rem 3rem; }
+  .rules-card { padding: 1.5rem 1.25rem; }
+  .rules-grid { grid-template-columns: 1fr; gap: 10px; }
+  .rule-item { padding: 12px; }
+  nav { padding: 0 1rem; }
+  .btn-begin { width: 100%; }
+}
+
+</style>
 </head>
 <body>
 <div class="card">
