@@ -6,8 +6,7 @@
   <title>Your Results — FitToHire</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
   <style>
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@900&display=swap');
-  .fth-logo { display:inline-flex; align-items:center; gap:10px; text-decoration:none; }
+.fth-logo { display:inline-flex; align-items:center; gap:10px; text-decoration:none; }
   .fth-logo-text { font-family:'Poppins','Arial Black',sans-serif; font-weight:900; font-size:22px; letter-spacing:-0.5px; line-height:1; filter:drop-shadow(1px 2px 3px rgba(0,0,0,0.22)); display:inline-flex; }
   .fth-logo-text .f { color:#DC2626; -webkit-text-stroke:0.5px #7f0000; text-shadow:1px 1px 0 #7f0000; }
   .fth-logo-text .t { color:#EAB308; -webkit-text-stroke:0.5px #713f12; text-shadow:1px 1px 0 #713f12; }
@@ -129,31 +128,36 @@
       .insights-grid { grid-template-columns: 1fr; }
       .page { padding: 1.5rem 1rem 3rem; }
     }
-  </style>
+  
+@media (max-width: 600px) {
+  .page { padding: 1.25rem 1rem 3rem; }
+  .score-hero { padding: 1.5rem 1rem; }
+  .stat-row { grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .stat-box { padding: 8px; }
+  .stat-val { font-size: 18px; }
+  .actions { flex-direction: column; align-items: stretch; }
+  .btn-share, .btn-retry, .btn-dash { width: 100%; text-align: center; justify-content: center; }
+  .breakdown-grid { grid-template-columns: 1fr; }
+  .insights-grid { grid-template-columns: 1fr; }
+  nav { padding: 0 1rem; }
+}
+
+</style>
 </head>
 <body>
 
 <nav>
-  <a href="/" class="fth-logo"><svg width="34" height="38" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+  <a href="/" class="fth-logo"><svg width="32" height="32" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;display:block;">
   <defs>
-    <radialGradient id="rL" cx="38%" cy="30%" r="62%"><stop offset="0%" stop-color="#ff8080"/><stop offset="38%" stop-color="#DC2626"/><stop offset="100%" stop-color="#6b0000"/></radialGradient>
-    <radialGradient id="aL" cx="38%" cy="30%" r="62%"><stop offset="0%" stop-color="#fef08a"/><stop offset="38%" stop-color="#EAB308"/><stop offset="100%" stop-color="#4a2800"/></radialGradient>
-    <radialGradient id="gL" cx="38%" cy="30%" r="62%"><stop offset="0%" stop-color="#86efac"/><stop offset="38%" stop-color="#16A34A"/><stop offset="100%" stop-color="#022c16"/></radialGradient>
+    <radialGradient id="rS" cx="38%" cy="30%" r="62%"><stop offset="0%" stop-color="#ff8080"/><stop offset="38%" stop-color="#DC2626"/><stop offset="100%" stop-color="#6b0000"/></radialGradient>
+    <radialGradient id="aS" cx="38%" cy="30%" r="62%"><stop offset="0%" stop-color="#fef08a"/><stop offset="38%" stop-color="#EAB308"/><stop offset="100%" stop-color="#4a2800"/></radialGradient>
+    <radialGradient id="gS" cx="38%" cy="30%" r="62%"><stop offset="0%" stop-color="#86efac"/><stop offset="38%" stop-color="#16A34A"/><stop offset="100%" stop-color="#022c16"/></radialGradient>
   </defs>
   <rect x="4" y="4" width="248" height="248" rx="52" fill="#1a1a1a"/>
   <rect x="28" y="28" width="200" height="200" rx="28" fill="#0d0d0d"/>
-  <circle cx="128" cy="74" r="38" fill="url(#rL)"/>
-  <circle cx="128" cy="74" r="19" fill="#ff6060" opacity="0.35"/>
-  <circle cx="128" cy="74" r="8" fill="white" opacity="0.72"/>
-  <ellipse cx="114" cy="61" rx="13" ry="7" fill="white" opacity="0.2"/>
-  <circle cx="128" cy="128" r="38" fill="url(#aL)"/>
-  <circle cx="128" cy="128" r="19" fill="#fde047" opacity="0.35"/>
-  <circle cx="128" cy="128" r="8" fill="white" opacity="0.72"/>
-  <ellipse cx="114" cy="115" rx="13" ry="7" fill="white" opacity="0.2"/>
-  <circle cx="128" cy="182" r="38" fill="url(#gL)"/>
-  <circle cx="128" cy="182" r="19" fill="#4ade80" opacity="0.35"/>
-  <circle cx="128" cy="182" r="8" fill="white" opacity="0.72"/>
-  <ellipse cx="114" cy="169" rx="13" ry="7" fill="white" opacity="0.2"/>
+  <circle cx="128" cy="74" r="46" fill="url(#rS)"/><circle cx="128" cy="74" r="23" fill="#ff6060" opacity="0.35"/><circle cx="128" cy="74" r="9" fill="white" opacity="0.72"/>
+  <circle cx="128" cy="128" r="46" fill="url(#aS)"/><circle cx="128" cy="128" r="23" fill="#fde047" opacity="0.35"/><circle cx="128" cy="128" r="9" fill="white" opacity="0.72"/>
+  <circle cx="128" cy="182" r="46" fill="url(#gS)"/><circle cx="128" cy="182" r="23" fill="#4ade80" opacity="0.35"/><circle cx="128" cy="182" r="9" fill="white" opacity="0.72"/>
 </svg><span class="fth-logo-text"><span class="f">Fit</span><span class="t">To</span><span class="h">Hire</span></span></a>
   <div class="nav-right">
     <a href="/dashboard" class="nav-link">← Dashboard</a>
