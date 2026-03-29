@@ -79,7 +79,7 @@ async def check_employer_subscription(user_id: str, supabase) -> bool:
 
 
 @router.get("/dashboard")
-async def employer_dashboard(request: Request):
+async def employer_dashboard(request: Request, msg: str = ""):
     user = await get_employer_user(request)
     if not user:
         return RedirectResponse("/auth/login?next=/employer/dashboard")
@@ -225,6 +225,7 @@ async def employer_dashboard(request: Request):
             "job_posts":         job_posts,
             "professions":       PROFESSIONS,
             "search_q":          "",
+            "msg":               msg,
         }
     )
 
@@ -742,27 +743,34 @@ async def create_job_subscribed(body: JobCreateRequest, request: Request):
     expires_at = (now + timedelta(days=30)).isoformat()
 
     try:
-        result = supabase.table("job_posts").insert({
-            "employer_id":     user["id"],
-            "title":           body.title,
-            "profession":      body.profession,
-            "location":        body.location,
+        import json as _json
+        row = {
+            "employer_id":  user["id"],
+            "title":        body.title,
+            "profession":   body.profession,
+            "location":     body.location,
+            "description":  body.description,
+            "company_name": body.company_name,
+            "contact_email":body.contact_email,
+            "is_active":    True,
+            "created_at":   now.isoformat(),
+            "expires_at":   expires_at,
+        }
+        optional = {
             "employment_type": body.employment_type,
             "work_mode":       body.work_mode,
             "salary_min":      body.salary_min,
             "salary_max":      body.salary_max,
             "min_score":       body.min_score,
-            "description":     body.description,
             "requirements":    body.requirements,
-            "skills":          body.skills,
-            "company_name":    body.company_name,
+            "skills":          _json.dumps(body.skills or []),
             "company_website": body.company_website,
             "company_size":    body.company_size,
-            "contact_email":   body.contact_email,
-            "is_active":       True,
-            "created_at":      now.isoformat(),
-            "expires_at":      expires_at,
-        }).execute()
+        }
+        for k, v in optional.items():
+            if v is not None:
+                row[k] = v
+        result = supabase.table("job_posts").insert(row).execute()
 
         # Update employer profile company info
         supabase.table("employer_profiles").upsert({
@@ -791,31 +799,39 @@ async def create_job_order(body: JobCreateRequest, request: Request):
     expires_at = (now + timedelta(days=30)).isoformat()
 
     try:
-        result = supabase.table("job_posts").insert({
-            "employer_id":     user["id"],
-            "title":           body.title,
-            "profession":      body.profession,
-            "location":        body.location,
+        import json as _json
+        row = {
+            "employer_id":  user["id"],
+            "title":        body.title,
+            "profession":   body.profession,
+            "location":     body.location,
+            "description":  body.description,
+            "company_name": body.company_name,
+            "contact_email":body.contact_email,
+            "is_active":    False,
+            "created_at":   now.isoformat(),
+            "expires_at":   expires_at,
+        }
+        # Add optional columns safely
+        optional = {
             "employment_type": body.employment_type,
             "work_mode":       body.work_mode,
             "salary_min":      body.salary_min,
             "salary_max":      body.salary_max,
             "min_score":       body.min_score,
-            "description":     body.description,
             "requirements":    body.requirements,
-            "skills":          body.skills,
-            "company_name":    body.company_name,
+            "skills":          _json.dumps(body.skills or []),
             "company_website": body.company_website,
             "company_size":    body.company_size,
-            "contact_email":   body.contact_email,
-            "is_active":       False,  # pending payment
-            "created_at":      now.isoformat(),
-            "expires_at":      expires_at,
-        }).execute()
+        }
+        for k, v in optional.items():
+            if v is not None:
+                row[k] = v
+        result = supabase.table("job_posts").insert(row).execute()
         job_id = result.data[0]["id"] if result.data else None
     except Exception as e:
         logger.error(f"Job pre-create error: {e}")
-        raise HTTPException(500, "Could not create job post.")
+        raise HTTPException(500, f"Could not create job post: {str(e)}")
 
     # Create Razorpay order
     import razorpay
@@ -1087,6 +1103,22 @@ async def view_answers(candidate_id: str, session_id: str, request: Request):
         }
     )
 
+
+
+@router.get("/subscribe")
+async def employer_subscribe_page(request: Request):
+    user = await get_employer_user(request)
+    if not user:
+        return RedirectResponse("/auth/login?next=/employer/subscribe")
+    supabase = get_supabase()
+    is_subscribed = await check_employer_subscription(user["id"], supabase)
+    if is_subscribed:
+        return RedirectResponse("/employer/dashboard")
+    return templates.TemplateResponse(
+        request=request,
+        name="employer/subscribe.html",
+        context={"user": user, "is_subscribed": False}
+    )
 
 # ── Analytics route ───────────────────────────────────────────────────
 
