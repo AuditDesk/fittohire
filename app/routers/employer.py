@@ -84,6 +84,10 @@ async def employer_dashboard(request: Request):
     if not user:
         return RedirectResponse("/auth/login?next=/employer/dashboard")
 
+    # If user is registered as job seeker, redirect to job seeker dashboard
+    if user.get("role") == "job_seeker":
+        return RedirectResponse("/dashboard?msg=wrong_role")
+
     supabase = get_supabase()
     is_subscribed = await check_employer_subscription(user["id"], supabase)
 
