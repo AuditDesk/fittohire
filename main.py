@@ -19,6 +19,18 @@ app.include_router(certificate.router)
 async def home():
     return FileResponse("static/index.html")
 
+@app.get("/privacy")
+async def privacy():
+    return FileResponse("static/privacy.html")
+
+@app.get("/terms")
+async def terms():
+    return FileResponse("static/terms.html")
+
+@app.get("/refund")
+async def refund():
+    return FileResponse("static/refund.html")
+
 @app.get("/pricing")
 async def pricing():
     # Redirect to landing page pricing section
