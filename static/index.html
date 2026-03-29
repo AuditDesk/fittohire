@@ -957,6 +957,7 @@ footer {
   .professions-section { padding: 60px 24px; }
   .pricing-section { padding: 60px 24px; }
   .pricing-cards { grid-template-columns: 1fr; }
+  .pricing-cards [style*="grid-column:1/-1"] > div { grid-template-columns: 1fr !important; }
   .badges-grid { grid-template-columns: repeat(2, 1fr); }
   .employer-section { padding: 60px 24px; }
   .emp-features { grid-template-columns: 1fr; }
@@ -1352,6 +1353,10 @@ footer {
     <p class="section-sub fade-up" style="margin: 0 auto 0;">No hidden fees. No feature locks. Pay monthly or save with annual.</p>
 
     <div class="pricing-cards">
+      <!-- Job seeker plans label -->
+      <div style="grid-column:1/-1;padding-bottom:4px;">
+        <span style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;">For Job Seekers</span>
+      </div>
       <div class="price-card">
         <div class="price-who">Monthly Plan</div>
         <div class="price-amount">₹199<span>/month</span></div>
@@ -1441,9 +1446,46 @@ footer {
         <p style="font-size:14px;color:#6B7280;line-height:1.8;">
           Subscribe for ₹199 while you're job hunting. Stop whenever you like — just cancel your autopay from your UPI app. Your profile, scores and badges stay with your account indefinitely. When you need to practise again, subscribe and pick up exactly where you left off. <strong style="color:#111827;">You never lose your history.</strong>
         </p>
-        <p style="font-size:13px;color:#9CA3AF;margin-top:10px;">
-          Employers: your account, shortlisted candidates and notes remain saved whether or not you have an active subscription. Subscribe only when you're actively hiring.
+        <p style="font-size:13px;color:#6B7280;margin-top:10px;">
+          Employers: your account, shortlisted candidates and notes remain saved whether or not you have an active subscription. <a href="/employer/subscribe" style="color:#16A34A;font-weight:500;">Subscribe ₹1,999/month</a> only when you're actively hiring.
         </p>
+
+      <!-- Employer plan -->
+      <div style="grid-column:1/-1;border-top:1px solid var(--line);padding-top:24px;margin-top:8px;" class="fade-up">
+        <p style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;">For Employers</p>
+        <div style="background:#F0F9FF;border:1.5px solid #1D4ED8;border-radius:20px;padding:36px;display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start;">
+          <div>
+            <div style="font-size:12px;font-weight:500;color:#1D4ED8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">Employer Subscription</div>
+            <div style="font-family:var(--display);font-size:48px;font-weight:800;color:var(--ink);letter-spacing:-2px;line-height:1;margin-bottom:4px;">₹1,999<span style="font-size:18px;font-weight:400;color:var(--muted);letter-spacing:0;">/month</span></div>
+            <div style="font-size:14px;color:#1D4ED8;margin-bottom:8px;">Register is free. This unlocks the answers.</div>
+            <div style="font-size:13px;color:var(--muted);margin-bottom:20px;">Cancel anytime by stopping your UPI autopay. No lock-in. Your data stays saved.</div>
+            <a href="/employer/subscribe" style="display:inline-block;padding:14px 28px;background:#1D4ED8;color:white;border-radius:12px;font-size:15px;font-weight:600;text-decoration:none;">Subscribe as Employer →</a>
+            <div style="font-size:12px;color:var(--muted);margin-top:10px;">Or <a href="/auth/login" style="color:#1D4ED8;">register free</a> to browse candidates first</div>
+          </div>
+          <ul style="list-style:none;display:grid;gap:10px;padding:0;">
+            <li style="font-size:14px;color:var(--ink);display:flex;align-items:flex-start;gap:10px;line-height:1.5;">
+              <div style="width:20px;height:20px;border-radius:6px;background:#1D4ED8;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;"><svg viewBox="0 0 9 9" fill="none" width="10" height="10"><path d="M1.5 4.5l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              Browse, filter and contact candidates — always free
+            </li>
+            <li style="font-size:14px;color:var(--ink);display:flex;align-items:flex-start;gap:10px;line-height:1.5;">
+              <div style="width:20px;height:20px;border-radius:6px;background:#1D4ED8;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;"><svg viewBox="0 0 9 9" fill="none" width="10" height="10"><path d="M1.5 4.5l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              Read actual interview answers — all 10 questions — before you call anyone
+            </li>
+            <li style="font-size:14px;color:var(--ink);display:flex;align-items:flex-start;gap:10px;line-height:1.5;">
+              <div style="width:20px;height:20px;border-radius:6px;background:#1D4ED8;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;"><svg viewBox="0 0 9 9" fill="none" width="10" height="10"><path d="M1.5 4.5l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              Shortlist candidates and write private notes only you can see
+            </li>
+            <li style="font-size:14px;color:var(--ink);display:flex;align-items:flex-start;gap:10px;line-height:1.5;">
+              <div style="width:20px;height:20px;border-radius:6px;background:#1D4ED8;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;"><svg viewBox="0 0 9 9" fill="none" width="10" height="10"><path d="M1.5 4.5l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              Unlimited job posts free — free employers pay ₹499/post
+            </li>
+            <li style="font-size:14px;color:var(--ink);display:flex;align-items:flex-start;gap:10px;line-height:1.5;">
+              <div style="width:20px;height:20px;border-radius:6px;background:#1D4ED8;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;"><svg viewBox="0 0 9 9" fill="none" width="10" height="10"><path d="M1.5 4.5l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              No commission on hiring under our current model
+            </li>
+          </ul>
+        </div>
+      </div>
       </div>
   </div>
 </section>
@@ -1452,28 +1494,41 @@ footer {
 <section class="employer-section" id="employers">
   <div class="employer-inner">
     <p class="section-label fade-up" style="color: rgba(255,255,255,0.4);">For Employers</p>
-    <h2 class="emp-title fade-up">Find candidates who have<br>already proved themselves.</h2>
-    <p class="emp-sub fade-up">No registration fees. No hiring commissions. Browse verified profiles, view real interview scores, and contact the right candidate — free.</p>
+    <h2 class="emp-title fade-up">Stop guessing from a CV.<br>Read the actual interview.</h2>
+    <p class="emp-sub fade-up">Registering is free. Browsing is free. Contacting candidates is free. We charge only when you want to read their interview answers — because that intelligence is worth paying for.</p>
 
-    <div class="emp-features fade-up">
+    <!-- Free vs Paid clarity -->
+    <div class="emp-features fade-up" style="margin-bottom:2rem;">
       <div class="emp-feat">
-        <div class="emp-feat-title">Browse verified profiles</div>
-        <div class="emp-feat-desc">Every candidate has real AI-scored interview sessions. Not claims — proof.</div>
+        <div class="emp-feat-title">Always free</div>
+        <div class="emp-feat-desc">Browse all verified profiles. Filter by profession, score, location and availability. Contact any candidate who has opted in. Post a job for ₹499.</div>
       </div>
       <div class="emp-feat">
-        <div class="emp-feat-title">Filter by score & rank</div>
-        <div class="emp-feat-desc">Sort by profession, score, location and rank. Find your ideal candidate fast.</div>
+        <div class="emp-feat-title">₹1,999/month — read answers</div>
+        <div class="emp-feat-desc">Read every candidate's actual interview answers before you call. Shortlist with private notes. Post unlimited jobs. See score distribution across your pipeline.</div>
       </div>
       <div class="emp-feat">
-        <div class="emp-feat-title">Contact candidates free</div>
-        <div class="emp-feat-desc">Reach out to any candidate directly. No commission on hiring under our current model</div>
+        <div class="emp-feat-title">No commission. Ever.</div>
+        <div class="emp-feat-desc">We do not take a cut when you hire. Under our current model, FitToHire earns from subscriptions — not from your hiring decisions.</div>
       </div>
     </div>
 
-    <a href="/auth/login" class="btn-employer fade-up">
-      Register as Employer — Free
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </a>
+    <!-- Why 1999 explanation -->
+    <div style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:14px;padding:20px 24px;margin-bottom:2rem;max-width:620px;margin-left:auto;margin-right:auto;" class="fade-up">
+      <p style="font-size:15px;color:rgba(255,255,255,0.85);line-height:1.8;margin:0;">
+        A typical recruiter spends 20 minutes on a phone screen to decide if someone is worth interviewing. FitToHire gives you 10 scored answers — with the actual text — before you make a single call. ₹1,999/month is one bad hire avoided.
+      </p>
+    </div>
+
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;" class="fade-up">
+      <a href="/auth/login" class="btn-employer">
+        Register Free — Start Browsing
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a href="#pricing" style="padding:16px 28px;background:transparent;border:2px solid rgba(255,255,255,0.3);color:white;border-radius:14px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s;text-decoration:none;">
+        See all plans ↓
+      </a>
+    </div>
   </div>
 </section>
 
@@ -1507,8 +1562,9 @@ footer {
         <div class="footer-col">
           <h4>For Employers</h4>
           <a href="/auth/login">Register Free</a>
-          <a href="#">Browse Profiles</a>
-          <a href="#">Post a Job</a>
+          <a href="/employer/candidates">Browse Profiles</a>
+          <a href="/employer/jobs/new">Post a Job</a>
+          <a href="/employer/subscribe">Subscribe ₹1,999/mo</a>
         </div>
         <div class="footer-col">
           <h4>Legal</h4>
@@ -1518,8 +1574,7 @@ footer {
         </div>
         <div class="footer-col">
           <h4>Support</h4>
-          <span>auditdesk.hq&#64;gmail.com</span>
-          <span>auditdesk.hq&#64;gmail.com</span>
+          <a href="mailto:auditdesk.hq&#64;gmail.com">auditdesk.hq&#64;gmail.com</a>
         </div>
       </div>
     </div>
