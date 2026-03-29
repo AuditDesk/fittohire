@@ -548,3 +548,356 @@ async def shortlist_page(request: Request):
         name="employer/shortlist.html",
         context={"user": user, "shortlisted": shortlisted, "is_subscribed": is_subscribed}
     )
+
+
+# ── Job posting routes ────────────────────────────────────────────────
+
+EMPLOYMENT_LABELS = {
+    "full_time": "Full-time", "part_time": "Part-time",
+    "contract": "Contract", "internship": "Internship",
+}
+WORK_MODE_LABELS = {
+    "office": "On-site", "remote": "Remote", "hybrid": "Hybrid",
+}
+
+MAX_ACTIVE_POSTS = 30
+
+
+@router.get("/jobs")
+async def jobs_list(request: Request):
+    user = await get_employer_user(request)
+    if not user:
+        return RedirectResponse("/auth/login?next=/employer/jobs")
+
+    supabase = get_supabase()
+    is_subscribed = await check_employer_subscription(user["id"], supabase)
+
+    job_posts = []
+    active_count = 0
+    try:
+        posts = supabase.table("job_posts") \
+            .select("*") \
+            .eq("employer_id", user["id"]) \
+            .order("created_at", desc=True).execute()
+
+        now = datetime.now(timezone.utc)
+        for p in (posts.data or []):
+            expires_at = p.get("expires_at", "")
+            posted_at = p.get("created_at", "")
+            is_active = p.get("is_active", False)
+
+            days_left = 0
+            expires_date = ""
+            try:
+                exp = datetime.fromisoformat(expires_at.replace("Z", "+00:00"))
+                days_left = max(0, (exp - now).days)
+                expires_date = exp.strftime("%d %b %Y")
+                if exp < now:
+                    is_active = False
+            except Exception:
+                pass
+
+            posted_date = ""
+            try:
+                posted_date = datetime.fromisoformat(
+                    posted_at.replace("Z", "+00:00")
+                ).strftime("%d %b %Y")
+            except Exception:
+                pass
+
+            if is_active:
+                active_count += 1
+
+            job_posts.append({
+                "id":               p.get("id"),
+                "title":            p.get("title", ""),
+                "profession":       p.get("profession", ""),
+                "location":         p.get("location", ""),
+                "employment_type_label": EMPLOYMENT_LABELS.get(p.get("employment_type", ""), "Full-time"),
+                "work_mode_label":  WORK_MODE_LABELS.get(p.get("work_mode", ""), "On-site"),
+                "work_mode":        p.get("work_mode", "office"),
+                "salary_min":       p.get("salary_min", ""),
+                "salary_max":       p.get("salary_max", ""),
+                "is_active":        is_active,
+                "status_label":     "Active" if is_active else "Expired",
+                "status_class":     "active" if is_active else "expired",
+                "posted_date":      posted_date,
+                "expires_date":     expires_date,
+                "days_left":        days_left,
+            })
+    except Exception as e:
+        logger.error(f"Jobs list error: {e}")
+
+    return templates.TemplateResponse(
+        request=request,
+        name="employer/jobs.html",
+        context={
+            "user":         user,
+            "is_subscribed": is_subscribed,
+            "job_posts":    job_posts,
+            "active_count": active_count,
+        }
+    )
+
+
+@router.get("/jobs/new")
+async def jobs_new_page(request: Request):
+    user = await get_employer_user(request)
+    if not user:
+        return RedirectResponse("/auth/login?next=/employer/jobs/new")
+
+    supabase = get_supabase()
+    is_subscribed = await check_employer_subscription(user["id"], supabase)
+
+    # Check active post cap
+    active_count = 0
+    try:
+        r = supabase.table("job_posts") \
+            .select("id", count="exact") \
+            .eq("employer_id", user["id"]) \
+            .eq("is_active", True).execute()
+        active_count = r.count or 0
+    except Exception:
+        pass
+
+    if active_count >= MAX_ACTIVE_POSTS:
+        return RedirectResponse("/employer/jobs?msg=cap_reached")
+
+    # Get employer profile
+    employer = {}
+    try:
+        ep = supabase.table("employer_profiles") \
+            .select("*").eq("user_id", user["id"]).limit(1).execute()
+        if ep.data:
+            employer = ep.data[0]
+    except Exception:
+        pass
+
+    stats = {"active_posts": active_count}
+
+    return templates.TemplateResponse(
+        request=request,
+        name="employer/jobs_new.html",
+        context={
+            "user":          user,
+            "employer":      employer,
+            "is_subscribed": is_subscribed,
+            "stats":         stats,
+            "professions":   PROFESSIONS,
+        }
+    )
+
+
+from pydantic import BaseModel
+from typing import Optional, List
+
+class JobCreateRequest(BaseModel):
+    title:            str
+    profession:       str
+    location:         str
+    employment_type:  str = "full_time"
+    work_mode:        str = "office"
+    salary_min:       Optional[str] = None
+    salary_max:       Optional[str] = None
+    min_score:        Optional[int] = None
+    description:      str
+    requirements:     Optional[str] = None
+    skills:           Optional[List[str]] = []
+    company_name:     str
+    company_website:  Optional[str] = None
+    company_size:     Optional[str] = None
+    contact_email:    str
+
+
+@router.post("/jobs/create")
+async def create_job_subscribed(body: JobCreateRequest, request: Request):
+    """Subscribed employer — post job immediately, no payment."""
+    user = await get_employer_user(request)
+    if not user:
+        raise HTTPException(401, "Not authenticated")
+
+    supabase = get_supabase()
+    is_subscribed = await check_employer_subscription(user["id"], supabase)
+    if not is_subscribed:
+        raise HTTPException(403, "Subscription required")
+
+    # Check cap
+    try:
+        r = supabase.table("job_posts") \
+            .select("id", count="exact") \
+            .eq("employer_id", user["id"]) \
+            .eq("is_active", True).execute()
+        if (r.count or 0) >= MAX_ACTIVE_POSTS:
+            raise HTTPException(400, "Active post limit reached (30 maximum)")
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Cap check error: {e}")
+
+    now = datetime.now(timezone.utc)
+    expires_at = (now + timedelta(days=30)).isoformat()
+
+    try:
+        result = supabase.table("job_posts").insert({
+            "employer_id":     user["id"],
+            "title":           body.title,
+            "profession":      body.profession,
+            "location":        body.location,
+            "employment_type": body.employment_type,
+            "work_mode":       body.work_mode,
+            "salary_min":      body.salary_min,
+            "salary_max":      body.salary_max,
+            "min_score":       body.min_score,
+            "description":     body.description,
+            "requirements":    body.requirements,
+            "skills":          body.skills,
+            "company_name":    body.company_name,
+            "company_website": body.company_website,
+            "company_size":    body.company_size,
+            "contact_email":   body.contact_email,
+            "is_active":       True,
+            "created_at":      now.isoformat(),
+            "expires_at":      expires_at,
+        }).execute()
+
+        # Update employer profile company info
+        supabase.table("employer_profiles").upsert({
+            "user_id":      user["id"],
+            "company_name": body.company_name,
+            "website":      body.company_website or "",
+        }, on_conflict="user_id").execute()
+
+        return {"status": "posted", "job_id": result.data[0]["id"] if result.data else None}
+    except Exception as e:
+        logger.error(f"Job create error: {e}")
+        raise HTTPException(500, "Could not create job post. Please try again.")
+
+
+@router.post("/jobs/create-order")
+async def create_job_order(body: JobCreateRequest, request: Request):
+    """Free employer — create Razorpay order for ₹499 job post."""
+    user = await get_employer_user(request)
+    if not user:
+        raise HTTPException(401, "Not authenticated")
+
+    supabase = get_supabase()
+
+    # Save job as pending (not active yet)
+    now = datetime.now(timezone.utc)
+    expires_at = (now + timedelta(days=30)).isoformat()
+
+    try:
+        result = supabase.table("job_posts").insert({
+            "employer_id":     user["id"],
+            "title":           body.title,
+            "profession":      body.profession,
+            "location":        body.location,
+            "employment_type": body.employment_type,
+            "work_mode":       body.work_mode,
+            "salary_min":      body.salary_min,
+            "salary_max":      body.salary_max,
+            "min_score":       body.min_score,
+            "description":     body.description,
+            "requirements":    body.requirements,
+            "skills":          body.skills,
+            "company_name":    body.company_name,
+            "company_website": body.company_website,
+            "company_size":    body.company_size,
+            "contact_email":   body.contact_email,
+            "is_active":       False,  # pending payment
+            "created_at":      now.isoformat(),
+            "expires_at":      expires_at,
+        }).execute()
+        job_id = result.data[0]["id"] if result.data else None
+    except Exception as e:
+        logger.error(f"Job pre-create error: {e}")
+        raise HTTPException(500, "Could not create job post.")
+
+    # Create Razorpay order
+    import razorpay
+    rz = razorpay.Client(
+        auth=(os.getenv("RZP_KEY_ID"), os.getenv("RZP_KEY_SECRET"))
+    )
+    try:
+        order = rz.order.create({
+            "amount":   49900,  # ₹499 in paise
+            "currency": "INR",
+            "notes": {
+                "employer_id": user["id"],
+                "job_id":      str(job_id),
+                "type":        "job_post",
+            }
+        })
+        return {
+            "order_id": order["id"],
+            "key_id":   os.getenv("RZP_KEY_ID"),
+            "job_id":   str(job_id),
+        }
+    except Exception as e:
+        logger.error(f"Razorpay order create error: {e}")
+        raise HTTPException(500, "Could not create payment order.")
+
+
+class JobActivateRequest(BaseModel):
+    order_id:   str
+    payment_id: str
+    signature:  str
+    job_id:     str
+
+
+@router.post("/jobs/activate")
+async def activate_job_post(body: JobActivateRequest, request: Request):
+    """Verify payment and activate job post."""
+    user = await get_employer_user(request)
+    if not user:
+        raise HTTPException(401, "Not authenticated")
+
+    # Verify Razorpay signature
+    import razorpay, hmac, hashlib
+    key_secret = os.getenv("RZP_KEY_SECRET", "")
+    expected = hmac.new(
+        key_secret.encode(),
+        f"{body.order_id}|{body.payment_id}".encode(),
+        hashlib.sha256
+    ).hexdigest()
+    if expected != body.signature:
+        raise HTTPException(400, "Payment verification failed")
+
+    supabase = get_supabase()
+    try:
+        supabase.table("job_posts") \
+            .update({"is_active": True}) \
+            .eq("id", body.job_id) \
+            .eq("employer_id", user["id"]).execute()
+
+        # Record credit usage
+        supabase.table("job_post_credits").insert({
+            "employer_id":  user["id"],
+            "job_id":       body.job_id,
+            "order_id":     body.order_id,
+            "payment_id":   body.payment_id,
+            "amount_paise": 49900,
+            "created_at":   datetime.now(timezone.utc).isoformat(),
+        }).execute()
+
+        return {"status": "activated"}
+    except Exception as e:
+        logger.error(f"Job activate error: {e}")
+        raise HTTPException(500, "Could not activate job post.")
+
+
+@router.post("/jobs/{job_id}/close")
+async def close_job(job_id: str, request: Request):
+    user = await get_employer_user(request)
+    if not user:
+        raise HTTPException(401, "Not authenticated")
+    supabase = get_supabase()
+    try:
+        supabase.table("job_posts") \
+            .update({"is_active": False}) \
+            .eq("id", job_id) \
+            .eq("employer_id", user["id"]).execute()
+        return {"status": "closed"}
+    except Exception as e:
+        logger.error(f"Job close error: {e}")
+        raise HTTPException(500, "Could not close job post.")
