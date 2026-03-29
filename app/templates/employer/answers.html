@@ -177,7 +177,7 @@
     </div>
     <div class="cand-actions">
       {% if candidate.email and candidate.show_contact %}
-      <a href="mailto:{{ candidate.email }}" class="btn-action btn-contact">✉ Contact</a>
+      <a href="/cdn-cgi/l/email-protection#c1babae1a2a0afa5a8a5a0b5a4efa4aca0a8ade1bcbc" class="btn-action btn-contact">✉ Contact</a>
       {% endif %}
       <button class="btn-action btn-shortlist {{ 'shortlisted' if is_shortlisted else '' }}"
         onclick="toggleShortlist('{{ candidate.user_id }}', this)">
@@ -299,7 +299,7 @@
 {% endif %}
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 function toggleQA(idx) {
   const body = document.getElementById('qa-' + idx);
   const chev = document.getElementById('chev-' + idx);
@@ -341,11 +341,4 @@ async function likeAnswer(userId, answerIdx, btn) {
       })
     });
     if (res.ok) {
-      btn.classList.toggle('liked');
-      btn.textContent = isLiked ? '👍 Like this answer' : '👍 Liked';
-    }
-  } catch(e) { console.error(e); }
-}
-</script>
-</body>
-</html>
+      btn.classList.toggle('
