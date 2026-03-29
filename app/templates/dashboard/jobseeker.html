@@ -374,7 +374,7 @@
   {% if sessions %}
   <div class="slist">
     {% for s in sessions %}
-    <a href="/sessions/{{ s.id }}" class="scard">
+    <a href="/interview/result/{{ s.id }}" class="scard">
       <div class="score-circle {% if s.score >= 75 %}s-hi{% elif s.score >= 50 %}s-md{% else %}s-lo{% endif %}">{{ s.score }}%</div>
       <div class="si">
         <div class="sp">{{ s.profession }}</div>
