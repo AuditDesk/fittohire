@@ -1086,3 +1086,155 @@ async def view_answers(candidate_id: str, session_id: str, request: Request):
             "employer_note":   employer_note,
         }
     )
+
+
+# ── Analytics route ───────────────────────────────────────────────────
+
+@router.get("/analytics")
+async def employer_analytics(request: Request):
+    user = await get_employer_user(request)
+    if not user:
+        return RedirectResponse("/auth/login?next=/employer/analytics")
+
+    supabase = get_supabase()
+    is_subscribed = await check_employer_subscription(user["id"], supabase)
+
+    if not is_subscribed:
+        return templates.TemplateResponse(
+            request=request,
+            name="employer/analytics.html",
+            context={"user": user, "is_subscribed": False,
+                     "stats": {}, "score_dist": [], "top_professions": [],
+                     "recent_shortlisted": [], "activity": []}
+        )
+
+    stats = {"total_viewed": 0, "shortlisted": 0, "active_posts": 0, "notes_written": 0}
+    score_dist = []
+    top_professions = []
+    recent_shortlisted = []
+    activity = []
+
+    try:
+        # Stats
+        interactions = supabase.table("employer_interactions") \
+            .select("interaction, candidate_id, employer_name, created_at") \
+            .eq("employer_id", user["id"]).execute()
+        all_ints = interactions.data or []
+
+        stats["total_viewed"]  = sum(1 for i in all_ints if i["interaction"] == "view")
+        stats["shortlisted"]   = sum(1 for i in all_ints if i["interaction"] == "shortlist")
+        stats["notes_written"] = sum(1 for i in all_ints if i["interaction"] == "note")
+
+        posts = supabase.table("job_posts") \
+            .select("id", count="exact") \
+            .eq("employer_id", user["id"]) \
+            .eq("is_active", True).execute()
+        stats["active_posts"] = posts.count or 0
+
+        # Shortlisted candidate IDs
+        shortlisted_ids = [i["candidate_id"] for i in all_ints if i["interaction"] == "shortlist"]
+
+        # Score distribution of shortlisted candidates
+        bands = [
+            {"label": "90–100%", "min": 90, "max": 100, "color": "#D97706", "count": 0},
+            {"label": "75–89%",  "min": 75, "max": 89,  "color": "#6B7280", "count": 0},
+            {"label": "60–74%",  "min": 60, "max": 74,  "color": "#92400E", "count": 0},
+            {"label": "Below 60","min": 0,  "max": 59,  "color": "#E5E7EB", "count": 0},
+        ]
+
+        prof_counts = {}
+        for cid in shortlisted_ids:
+            try:
+                best = supabase.table("interview_sessions") \
+                    .select("score, profession") \
+                    .eq("user_id", cid).eq("status", "completed") \
+                    .order("score", desc=True).limit(1).execute()
+                if best.data:
+                    score = best.data[0]["score"] or 0
+                    prof  = best.data[0].get("profession", "Other")
+                    for band in bands:
+                        if band["min"] <= score <= band["max"]:
+                            band["count"] += 1
+                            break
+                    prof_counts[prof] = prof_counts.get(prof, 0) + 1
+            except Exception:
+                pass
+
+        score_dist = bands
+        top_professions = sorted(
+            [{"profession": p, "count": c} for p, c in prof_counts.items()],
+            key=lambda x: x["count"], reverse=True
+        )[:5]
+
+        # Recent shortlisted with profile info
+        recent_sl_ids = [i["candidate_id"] for i in sorted(
+            [i for i in all_ints if i["interaction"] == "shortlist"],
+            key=lambda x: x["created_at"], reverse=True
+        )][:5]
+
+        for cid in recent_sl_ids:
+            try:
+                p = supabase.table("jobseeker_profiles") \
+                    .select("public_slug, profession, location, full_name") \
+                    .eq("user_id", cid).limit(1).execute()
+                u = supabase.table("users") \
+                    .select("email, full_name").eq("id", cid).limit(1).execute()
+                pd = p.data[0] if p.data else {}
+                ud = u.data[0] if u.data else {}
+                name = pd.get("full_name") or ud.get("full_name", "")
+                email = ud.get("email", "")
+                display = name or email.split("@")[0].title()
+
+                best = supabase.table("interview_sessions") \
+                    .select("score").eq("user_id", cid).eq("status", "completed") \
+                    .order("score", desc=True).limit(1).execute()
+                best_score = best.data[0]["score"] if best.data else 0
+
+                recent_shortlisted.append({
+                    "slug":       pd.get("public_slug", ""),
+                    "name":       display,
+                    "initials":   initials(name, email),
+                    "profession": pd.get("profession", ""),
+                    "location":   pd.get("location", ""),
+                    "best_score": best_score,
+                })
+            except Exception:
+                pass
+
+        # Activity timeline
+        now = datetime.now(timezone.utc)
+        action_labels = {
+            "shortlist":   ("shortlist", "Shortlisted a candidate"),
+            "view":        ("view",      "Viewed candidate answers"),
+            "note":        ("note",      "Added a private note"),
+            "like_answer": ("note",      "Liked an interview answer"),
+        }
+        for item in sorted(all_ints, key=lambda x: x["created_at"], reverse=True)[:10]:
+            action = item["interaction"]
+            if action not in action_labels:
+                continue
+            dot_type, label = action_labels[action]
+            try:
+                dt = datetime.fromisoformat(item["created_at"].replace("Z", "+00:00"))
+                days_ago = (now - dt).days
+                when = "today" if days_ago == 0 else f"{days_ago}d ago"
+            except Exception:
+                when = ""
+            activity.append({"type": dot_type, "text": label, "when": when})
+
+    except Exception as e:
+        logger.error(f"Analytics error: {e}")
+
+    return templates.TemplateResponse(
+        request=request,
+        name="employer/analytics.html",
+        context={
+            "user":              user,
+            "is_subscribed":     is_subscribed,
+            "stats":             stats,
+            "score_dist":        score_dist,
+            "top_professions":   top_professions,
+            "recent_shortlisted": recent_shortlisted,
+            "activity":          activity,
+        }
+    )
