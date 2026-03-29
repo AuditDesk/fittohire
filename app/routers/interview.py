@@ -393,7 +393,7 @@ async def score_session(session_id: str, request: Request):
         pass
 
     profession = session["profession"]
-    is_annual = plan == "annual"
+    is_annual = plan in ("js_annual", "annual")
 
     # Build scoring prompt for Claude Sonnet
     qa_text = "\n\n".join([
@@ -456,12 +456,45 @@ Interview Q&A:
     overall_score = int(result.get("overall_score", 0))
     now = datetime.now(timezone.utc).isoformat()
 
+    # Save per-answer scores and breakdowns back to interview_answers
+    questions = result.get("questions", [])
+    for q in questions:
+        idx = q.get("index")
+        if idx is None:
+            continue
+        try:
+            update_data = {
+                "score": q.get("score"),
+            }
+            breakdown = q.get("score_breakdown")
+            if breakdown:
+                update_data["score_breakdown"] = json.dumps(breakdown)
+            if is_annual:
+                update_data["feedback"]     = q.get("feedback", "")
+                update_data["coaching_tip"] = q.get("coaching_tip", "")
+            supabase.table("interview_answers")                 .update(update_data)                 .eq("session_id", session_id)                 .eq("question_index", idx).execute()
+        except Exception as e:
+            logger.error(f"Answer score update error idx={idx}: {e}")
+
+    # Compute overall score_breakdown as average across all questions
+    avg_breakdown = {}
+    if questions:
+        dims = ["clarity", "depth", "relevance", "communication"]
+        for dim in dims:
+            vals = [
+                q["score_breakdown"][dim]
+                for q in questions
+                if q.get("score_breakdown") and dim in q["score_breakdown"]
+            ]
+            if vals:
+                avg_breakdown[dim] = round(sum(vals) / len(vals))
+
     # Update session to completed
     try:
         supabase.table("interview_sessions").update({
             "status":           "completed",
             "score":            overall_score,
-            "score_breakdown":  json.dumps(result),
+            "score_breakdown":  json.dumps(avg_breakdown) if avg_breakdown else json.dumps(result),
             "completed_at":     now,
         }).eq("id", session_id).execute()
     except Exception as e:
@@ -567,7 +600,7 @@ async def result_page(request: Request, session_id: str):
             "badge":      badge.data[0] if badge.data else None,
             "score_data": score_data,
             "plan":       plan,
-            "is_annual":  plan == "annual",
+            "is_annual":  plan in ("js_annual", "annual"),
         }
     )
 
