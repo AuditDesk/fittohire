@@ -1,6 +1,7 @@
 """
 FitToHire — Dashboard Routes
-Job seeker dashboard: subscription, stats, session history, profile link.
+Job seeker dashboard: subscription, stats, session history, profile link,
+employer interaction notifications.
 Protected — redirects to /auth/login if not authenticated.
 """
 
@@ -39,7 +40,7 @@ def fmt_date(iso_date: str) -> str:
 
 
 @router.get("/dashboard")
-async def jobseeker_dashboard(request: Request):
+async def jobseeker_dashboard(request: Request, msg: str = ""):
     user = await get_current_user(request)
 
     if not user:
@@ -53,14 +54,17 @@ async def jobseeker_dashboard(request: Request):
 
     # Subscription
     subscription = None
+    plan = None
     try:
         r = supabase.table("jobseeker_subscriptions") \
             .select("*").eq("user_id", user_id) \
+            .eq("status", "active") \
             .order("created_at", desc=True).limit(1).execute()
         if r.data:
             s = r.data[0]
+            plan = s.get("plan", "js_monthly")
             subscription = {
-                "plan":      s.get("plan", "monthly"),
+                "plan":      plan,
                 "status":    s.get("status", "expired"),
                 "days_left": days_until(s.get("current_period_end", "")),
             }
@@ -113,14 +117,58 @@ async def jobseeker_dashboard(request: Request):
     except Exception as e:
         logger.warning(f"Profile fetch failed: {e}")
 
+    # Employer interaction notifications
+    # Annual subscribers see employer name + action
+    # Monthly subscribers see count only
+    employer_notifications = []
+    if plan == "js_annual":
+        try:
+            notifs = supabase.table("employer_interactions") \
+                .select("interaction, employer_name, created_at") \
+                .eq("candidate_id", user_id) \
+                .in_("interaction", ["shortlist", "like_profile"]) \
+                .order("created_at", desc=True) \
+                .limit(10).execute()
+            for n in (notifs.data or []):
+                action_label = "shortlisted you" if n["interaction"] == "shortlist" else "liked your profile"
+                employer_name = n.get("employer_name") or "An employer"
+                created = n.get("created_at", "")
+                try:
+                    dt = datetime.fromisoformat(created.replace("Z", "+00:00"))
+                    days_ago = (datetime.now(timezone.utc) - dt).days
+                    when = "today" if days_ago == 0 else f"{days_ago}d ago"
+                except Exception:
+                    when = ""
+                employer_notifications.append({
+                    "text":   f"{employer_name} {action_label}",
+                    "when":   when,
+                    "action": n["interaction"],
+                })
+        except Exception as e:
+            logger.error(f"Notification fetch error: {e}")
+
+    # View/interaction count — all subscribers see total count
+    view_count = 0
+    try:
+        views = supabase.table("employer_interactions") \
+            .select("id", count="exact") \
+            .eq("candidate_id", user_id) \
+            .execute()
+        view_count = views.count or 0
+    except Exception as e:
+        logger.error(f"View count error: {e}")
+
     return templates.TemplateResponse(
         request=request,
         name="dashboard/jobseeker.html",
         context={
-            "user":         user,
-            "subscription": subscription,
-            "sessions":     sessions,
-            "stats":        stats,
-            "profile":      profile,
+            "msg":                    msg,
+            "user":                   user,
+            "subscription":           subscription,
+            "sessions":               sessions,
+            "stats":                  stats,
+            "profile":                profile,
+            "employer_notifications": employer_notifications,
+            "view_count":             view_count,
         }
     )
