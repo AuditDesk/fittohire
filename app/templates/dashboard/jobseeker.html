@@ -141,6 +141,40 @@
   .annual-nudge a { width: 100%; text-align: center; }
   .view-count-box { flex-direction: column; gap: 4px; }
 }
+
+  /* Score trend chart */
+  .trend-section { margin-bottom:1.5rem; }
+  .trend-card { background:var(--white); border:1px solid var(--border); border-radius:14px; padding:20px; margin-bottom:10px; }
+  .trend-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+  .trend-prof { font-size:14px; font-weight:600; color:var(--text); }
+  .trend-change { font-size:13px; font-weight:600; }
+  .trend-change.up { color:var(--green); }
+  .trend-change.down { color:#EF4444; }
+  .trend-change.flat { color:var(--muted); }
+  .chart-wrap { position:relative; height:80px; }
+  .chart-wrap svg { width:100%; height:100%; overflow:visible; }
+  .chart-line { fill:none; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; }
+  .chart-area { opacity:.08; }
+  .chart-dot { r:4; }
+  .chart-label { font-size:10px; fill:#6B7280; }
+  .chart-score { font-size:11px; font-weight:600; }
+  /* Weakness report */
+  .weakness-card { background:var(--white); border:1px solid var(--border); border-radius:14px; padding:20px; margin-bottom:1.5rem; }
+  .weakness-header { display:flex; align-items:flex-start; gap:14px; margin-bottom:16px; }
+  .weakness-icon { width:44px; height:44px; border-radius:12px; background:#FEF3C7; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+  .weakness-title { font-size:15px; font-weight:600; color:var(--text); margin-bottom:4px; }
+  .weakness-desc { font-size:13px; color:var(--muted); line-height:1.6; }
+  .dim-bars { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
+  .dim-bar-item { }
+  .dim-bar-label { font-size:12px; color:var(--muted); margin-bottom:4px; display:flex; justify-content:space-between; }
+  .dim-bar-label span { font-weight:600; color:var(--text); }
+  .dim-bar-track { height:6px; background:#F3F4F6; border-radius:99px; overflow:hidden; }
+  .dim-bar-fill { height:100%; border-radius:99px; transition:width .8s; }
+  .tip-list { list-style:none; display:grid; gap:8px; }
+  .tip-list li { font-size:13px; color:var(--text); line-height:1.5; padding-left:20px; position:relative; }
+  .tip-list li::before { content:'→'; position:absolute; left:0; color:var(--green); font-weight:700; }
+  .annual-only-badge { display:inline-flex; align-items:center; gap:5px; background:#EFF6FF; color:#1D4ED8; font-size:11px; font-weight:600; padding:3px 10px; border-radius:99px; margin-bottom:12px; }
+
 </style>
 </head>
 <body>
@@ -231,6 +265,107 @@
     <a href="/#pricing">Upgrade to Annual</a>
   </div>
   {% endif %}
+
+  
+  <!-- Score trend chart — annual only -->
+  {% if plan == 'js_annual' and trend_data %}
+  <div class="trend-section">
+    <div class="annual-only-badge">⭐ Annual feature</div>
+    <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:12px;">Score trend by profession</div>
+    {% for t in trend_data %}
+    {% set points = t.points %}
+    {% set n = points | length %}
+    {% set scores = points | map(attribute='score') | list %}
+    {% set min_s = (scores | min) - 5 %}
+    {% set max_s = (scores | max) + 5 %}
+    {% set rng = max_s - min_s if max_s != min_s else 1 %}
+    {% set change = t.latest - t.first %}
+    {% set color = '#16A34A' if t.latest >= 75 else '#F59E0B' if t.latest >= 60 else '#EF4444' %}
+    <div class="trend-card">
+      <div class="trend-header">
+        <div class="trend-prof">{{ t.profession }}</div>
+        <div class="trend-change {{ 'up' if change > 0 else 'down' if change < 0 else 'flat' }}">
+          {{ '+' if change > 0 else '' }}{{ change }}% {{ '↑' if change > 0 else '↓' if change < 0 else '→' }}
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <svg viewBox="0 0 400 80" preserveAspectRatio="none">
+          {% set w = 360 / ([n - 1, 1] | max) %}
+          {% set path_d = namespace(v='') %}
+          {% set area_d = namespace(v='') %}
+          {% for p in points %}
+            {% set x = 20 + loop.index0 * w %}
+            {% set y = 70 - ((p.score - min_s) / rng * 55) %}
+            {% if loop.first %}
+              {% set path_d.v = 'M' + x|string + ',' + y|string %}
+              {% set area_d.v = 'M' + x|string + ',75 L' + x|string + ',' + y|string %}
+            {% else %}
+              {% set path_d.v = path_d.v + ' L' + x|string + ',' + y|string %}
+              {% set area_d.v = area_d.v + ' L' + x|string + ',' + y|string %}
+            {% endif %}
+          {% endfor %}
+          {% set area_d.v = area_d.v + ' L' + (20 + (n-1) * w)|string + ',75 Z' %}
+          <path fill="{{ color }}" opacity="0.1" d="{{ area_d.v }}"/>
+          <path class="chart-line" stroke="{{ color }}" d="{{ path_d.v }}"/>
+          {% for p in points %}
+            {% set x = 20 + loop.index0 * w %}
+            {% set y = 70 - ((p.score - min_s) / rng * 55) %}
+            <circle cx="{{ x }}" cy="{{ y }}" r="4" fill="{{ color }}"/>
+            <text x="{{ x }}" y="{{ y - 7 }}" text-anchor="middle" font-size="11" font-weight="600" fill="{{ color }}">{{ p.score }}</text>
+            <text x="{{ x }}" y="80" text-anchor="middle" font-size="10" fill="#6B7280">{{ p.date }}</text>
+          {% endfor %}
+        </svg>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% elif plan == 'js_annual' %}
+  <div class="trend-section">
+    <div class="annual-only-badge">⭐ Annual feature</div>
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px;text-align:center;color:var(--muted);font-size:14px;">
+      Complete 2+ sessions in the same profession to see your score trend.
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Weakness report — annual only -->
+  {% if plan == 'js_annual' and weakness_report %}
+  <div class="annual-only-badge">⭐ Annual feature</div>
+  <div class="weakness-card">
+    <div class="weakness-header">
+      <div class="weakness-icon">🎯</div>
+      <div>
+        <div class="weakness-title">Your area to improve: {{ weakness_report.tips.label }}</div>
+        <div class="weakness-desc">{{ weakness_report.tips.desc }}</div>
+      </div>
+    </div>
+    <div class="dim-bars">
+      {% for dim, color in [('clarity','#3B82F6'),('depth','#8B5CF6'),('relevance','#16A34A'),('communication','#F59E0B')] %}
+      {% if weakness_report.dim_avgs.get(dim) %}
+      <div class="dim-bar-item">
+        <div class="dim-bar-label">{{ dim | title }} <span>{{ weakness_report.dim_avgs[dim] }}%</span></div>
+        <div class="dim-bar-track">
+          <div class="dim-bar-fill" style="width:{{ weakness_report.dim_avgs[dim] }}%;background:{{ color }};"></div>
+        </div>
+      </div>
+      {% endif %}
+      {% endfor %}
+    </div>
+    <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px;">How to improve your {{ weakness_report.tips.label | lower }}:</div>
+    <ul class="tip-list">
+      {% for tip in weakness_report.tips.tips %}
+      <li>{{ tip }}</li>
+      {% endfor %}
+    </ul>
+    <div style="font-size:12px;color:var(--muted);margin-top:12px;">Based on {{ weakness_report.total_answers }} scored answers.</div>
+  </div>
+  {% elif plan == 'js_annual' %}
+  <div style="background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px;text-align:center;color:var(--muted);font-size:14px;margin-bottom:1.5rem;">
+    <div class="annual-only-badge" style="margin:0 auto 8px;">⭐ Annual feature</div>
+    Complete more sessions to unlock your personalised weakness report.
+  </div>
+  {% endif %}
+
 
   Recent sessions</h2>
     {% if sessions %}<a href="/sessions">View all</a>{% endif %}
