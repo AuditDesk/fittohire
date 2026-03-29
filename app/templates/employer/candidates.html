@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browse Candidates — FitToHire</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green:#16A34A; --green-light:#F0FDF4; --green-mid:#DCFCE7;
+      --border:#E5E7EB; --text:#111827; --muted:#6B7280;
+      --white:#fff; --cream:#F9FAFB; --amber:#F59E0B; --red:#EF4444;
+    }
+    body { font-family:-apple-system,'Segoe UI',system-ui,Arial,sans-serif; background:var(--cream); color:var(--text); min-height:100vh; }
+    .brand-fit{color:#DC2626!important;font-weight:800}
+    .brand-to{color:#EAB308!important;font-weight:800}
+    .brand-hire{color:#16A34A!important;font-weight:800}
+
+    nav { background:var(--white); border-bottom:1px solid var(--border); padding:0 2rem; height:58px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:10; }
+    .nav-logo { display:inline-flex; align-items:center; gap:9px; text-decoration:none; }
+    .nav-logo-text { font-family:-apple-system,'Segoe UI',system-ui,'Arial Black',Arial,sans-serif; font-weight:800; font-size:22px; letter-spacing:-0.5px; display:inline-flex; }
+    .nav-right { display:flex; align-items:center; gap:12px; }
+    .nav-link { font-size:13px; color:var(--muted); text-decoration:none; padding:6px 14px; border:1px solid var(--border); border-radius:8px; }
+    .nav-link:hover { color:var(--text); border-color:var(--text); }
+    .nav-link.active { background:var(--text); color:white; border-color:var(--text); }
+
+    .layout { display:grid; grid-template-columns:280px 1fr; gap:0; min-height:calc(100vh - 58px); }
+
+    /* Sidebar filters */
+    .sidebar { background:var(--white); border-right:1px solid var(--border); padding:1.5rem; position:sticky; top:58px; height:calc(100vh - 58px); overflow-y:auto; }
+    .sidebar h2 { font-size:14px; font-weight:600; margin-bottom:1rem; color:var(--text); }
+    .filter-group { margin-bottom:1.5rem; }
+    .filter-label { font-size:12px; font-weight:500; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin-bottom:8px; display:block; }
+    .filter-select, .filter-input { width:100%; padding:9px 12px; border:1.5px solid var(--border); border-radius:10px; font-size:13px; font-family:inherit; outline:none; background:var(--white); }
+    .filter-select:focus, .filter-input:focus { border-color:var(--green); }
+    .filter-chips { display:flex; flex-wrap:wrap; gap:6px; }
+    .chip { padding:5px 12px; border:1.5px solid var(--border); border-radius:99px; font-size:12px; cursor:pointer; background:var(--white); font-family:inherit; transition:all .15s; }
+    .chip.selected { background:var(--green); color:white; border-color:var(--green); }
+    .btn-apply { width:100%; padding:11px; background:var(--green); color:white; border:none; border-radius:10px; font-size:14px; font-weight:500; cursor:pointer; font-family:inherit; margin-top:.5rem; }
+    .btn-apply:hover { background:#15803D; }
+    .btn-reset { width:100%; padding:9px; background:transparent; color:var(--muted); border:1px solid var(--border); border-radius:10px; font-size:13px; cursor:pointer; font-family:inherit; margin-top:6px; }
+
+    /* Main content */
+    .main { padding:1.5rem 2rem 3rem; }
+    .results-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem; flex-wrap:wrap; gap:10px; }
+    .results-count { font-size:14px; color:var(--muted); }
+    .sort-select { padding:8px 12px; border:1.5px solid var(--border); border-radius:8px; font-size:13px; font-family:inherit; outline:none; }
+
+    /* Candidate cards */
+    .candidates-grid { display:grid; gap:14px; }
+    .cand-card { background:var(--white); border:1px solid var(--border); border-radius:16px; padding:20px; display:grid; grid-template-columns:auto 1fr auto; gap:16px; align-items:start; transition:border-color .15s; }
+    .cand-card:hover { border-color:#9CA3AF; }
+    .cand-avatar { width:52px; height:52px; border-radius:14px; background:linear-gradient(135deg,#16A34A,#0F6E56); display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:700; color:white; flex-shrink:0; }
+    .cand-body { min-width:0; }
+    .cand-name-row { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:3px; }
+    .cand-name { font-size:16px; font-weight:600; color:var(--text); }
+    .avail-badge { font-size:11px; font-weight:600; padding:2px 10px; border-radius:99px; }
+    .avail-badge.active { background:var(--green-mid); color:#166534; }
+    .avail-badge.open { background:#DBEAFE; color:#1D4ED8; }
+    .avail-badge.not { background:#F3F4F6; color:var(--muted); }
+    .cand-role { font-size:13px; color:var(--muted); margin-bottom:8px; }
+    .cand-tags { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px; }
+    .cand-tag { font-size:11px; padding:3px 10px; background:var(--cream); border:1px solid var(--border); border-radius:99px; color:var(--muted); }
+    .cand-scores { display:flex; gap:14px; }
+    .score-item { text-align:center; }
+    .score-val { font-size:18px; font-weight:700; color:var(--green); line-height:1; }
+    .score-lbl { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; margin-top:2px; }
+    .notice-tag { font-size:11px; color:var(--muted); margin-top:6px; }
+
+    /* Actions */
+    .cand-actions { display:flex; flex-direction:column; gap:8px; align-items:flex-end; flex-shrink:0; }
+    .btn-action { padding:8px 16px; border-radius:8px; font-size:13px; font-weight:500; cursor:pointer; font-family:inherit; border:none; transition:all .15s; white-space:nowrap; }
+    .btn-view { background:var(--green); color:white; text-decoration:none; display:inline-block; }
+    .btn-view:hover { background:#15803D; }
+    .btn-shortlist { background:var(--white); color:var(--text); border:1.5px solid var(--border); }
+    .btn-shortlist:hover { border-color:var(--amber); color:var(--amber); }
+    .btn-shortlist.shortlisted { background:#FEF3C7; color:#92400E; border-color:#FDE68A; }
+    .btn-note { background:var(--white); color:var(--muted); border:1.5px solid var(--border); font-size:12px; }
+    .btn-note:hover { border-color:var(--text); color:var(--text); }
+
+    /* Lock overlay for non-subscribed */
+    .lock-banner { background:linear-gradient(135deg,#1e2130,#2d3148); border-radius:12px; padding:14px 18px; margin-bottom:1.5rem; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+    .lock-banner p { font-size:13px; color:rgba(255,255,255,0.7); }
+    .btn-lock-upgrade { background:var(--amber); color:#1a1a1a; padding:8px 18px; border-radius:8px; text-decoration:none; font-size:13px; font-weight:600; white-space:nowrap; }
+
+    /* Note modal */
+    .modal-bg { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:100; align-items:center; justify-content:center; }
+    .modal-bg.show { display:flex; }
+    .modal { background:var(--white); border-radius:16px; padding:24px; max-width:440px; width:90%; }
+    .modal h3 { font-size:17px; font-weight:600; margin-bottom:6px; }
+    .modal p { font-size:13px; color:var(--muted); margin-bottom:1rem; }
+    .modal textarea { width:100%; padding:10px 14px; border:1.5px solid var(--border); border-radius:10px; font-size:14px; font-family:inherit; min-height:100px; resize:vertical; outline:none; }
+    .modal textarea:focus { border-color:var(--green); }
+    .modal-btns { display:flex; gap:10px; margin-top:12px; }
+    .btn-modal-cancel { flex:1; padding:10px; border:1.5px solid var(--border); border-radius:8px; background:transparent; font-family:inherit; font-size:14px; cursor:pointer; }
+    .btn-modal-save { flex:2; padding:10px; background:var(--green); color:white; border:none; border-radius:8px; font-family:inherit; font-size:14px; font-weight:500; cursor:pointer; }
+
+    /* Pagination */
+    .pagination { display:flex; align-items:center; justify-content:center; gap:8px; margin-top:2rem; }
+    .page-btn { padding:8px 14px; border:1.5px solid var(--border); border-radius:8px; font-size:14px; cursor:pointer; background:var(--white); font-family:inherit; text-decoration:none; color:var(--text); }
+    .page-btn.active { background:var(--green); color:white; border-color:var(--green); }
+    .page-btn:hover:not(.active) { border-color:var(--text); }
+
+    /* Empty */
+    .empty { text-align:center; padding:4rem 2rem; color:var(--muted); }
+    .empty h3 { font-size:18px; font-weight:600; color:var(--text); margin-bottom:8px; }
+
+    
+      .sidebar { position:static; height:auto; border-right:none; border-bottom:1px solid var(--border); }
+      .main { padding:1.25rem 1rem 3rem; }
+      nav { padding:0 1rem; }
+      .cand-card { grid-template-columns:auto 1fr; }
+      .cand-actions { grid-column:1/-1; flex-direction:row; align-items:center; }
+    }
+    
+      .cand-avatar { display:none; }
+      .cand-actions { flex-wrap:wrap; }
+      .btn-action { flex:1; text-align:center; }
+    }
+  @media (max-width:900px){
+  nav { padding:0 1rem; }
+  .nav-right { gap:6px; }
+  .nav-link { padding:5px 10px; font-size:12px; }
+  .layout { grid-template-columns:1fr; }
+  .sidebar { position:static; height:auto; border-right:none; border-bottom:1px solid var(--border); padding:1rem; }
+  .filter-chips { gap:4px; }
+  .main { padding:1rem 1rem 3rem; }
+  .results-header { flex-direction:column; align-items:flex-start; }
+  .cand-card { grid-template-columns:auto 1fr; gap:12px; padding:14px; }
+  .cand-actions { grid-column:1/-1; flex-direction:row; flex-wrap:wrap; align-items:center; gap:6px; }
+  .btn-action { flex:1; min-width:80px; text-align:center; padding:8px 10px; font-size:12px; }
+  .lock-banner { flex-direction:column; gap:10px; }
+  .btn-lock-upgrade { width:100%; text-align:center; }
+}
+@media (max-width:600px){
+  .cand-card { grid-template-columns:1fr; padding:12px; }
+  .cand-avatar { display:none; }
+  .cand-name { font-size:14px; }
+  .cand-scores { flex-wrap:wrap; gap:10px; }
+  .modal { padding:16px; }
+  .modal-btns { flex-direction:column; }
+}
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">
+    <svg width="32" height="32" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;display:block;">
+      <defs>
+        <radialGradient id="rN" cx="38%" cy="30%" r="62%"><stop offset="0%" stop-color="#ff8080"/><stop offset="38%" stop-color="#DC2626"/><stop offset="100%" stop-color="#6b0000"/></radialGradient>
+        <radialGradient id="aN" cx="38%" cy="30%" r="62%"><stop offset="0%" stop-color="#fef08a"/><stop offset="38%" stop-color="#EAB308"/><stop offset="100%" stop-color="#4a2800"/></radialGradient>
+        <radialGradient id="gN" cx="38%" cy="30%" r="62%"><stop offset="0%" stop-color="#86efac"/><stop offset="38%" stop-color="#16A34A"/><stop offset="100%" stop-color="#022c16"/></radialGradient>
+      </defs>
+      <rect x="4" y="4" width="248" height="248" rx="52" fill="#1a1a1a"/>
+      <rect x="28" y="28" width="200" height="200" rx="28" fill="#0d0d0d"/>
+      <circle cx="128" cy="74" r="46" fill="url(#rN)"/><circle cx="128" cy="74" r="23" fill="#ff6060" opacity="0.35"/><circle cx="128" cy="74" r="9" fill="white" opacity="0.72"/>
+      <circle cx="128" cy="128" r="46" fill="url(#aN)"/><circle cx="128" cy="128" r="23" fill="#fde047" opacity="0.35"/><circle cx="128" cy="128" r="9" fill="white" opacity="0.72"/>
+      <circle cx="128" cy="182" r="46" fill="url(#gN)"/><circle cx="128" cy="182" r="23" fill="#4ade80" opacity="0.35"/><circle cx="128" cy="182" r="9" fill="white" opacity="0.72"/>
+    </svg>
+    <span class="nav-logo-text"><span class="brand-fit">Fit</span><span class="brand-to">To</span><span class="brand-hire">Hire</span></span>
+  </a>
+  <div class="nav-right">
+    <a href="/employer/dashboard" class="nav-link">Dashboard</a>
+    <a href="/employer/candidates" class="nav-link active">Candidates</a>
+    <a href="/employer/shortlist" class="nav-link">Shortlist</a>
+    <a href="/employer/jobs" class="nav-link">Jobs</a>
+    <a href="/auth/logout" class="nav-link">Sign out</a>
+  </div>
+</nav>
+
+<div class="layout">
+
+  <!-- Sidebar filters -->
+  <aside class="sidebar">
+    <h2>Filter candidates</h2>
+    <form id="filter-form" method="get" action="/employer/candidates">
+
+      <div class="filter-group">
+        <label class="filter-label">Search</label>
+        <input class="filter-input" type="text" name="q" placeholder="Name or keyword..." value="{{ filters.q or '' }}">
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label">Profession</label>
+        <select class="filter-select" name="profession">
+          <option value="">All professions</option>
+          {% for p in professions %}
+          <option value="{{ p }}" {{ 'selected' if filters.profession == p else '' }}>{{ p }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label">Availability</label>
+        <div class="filter-chips">
+          <button type="button" class="chip {{ 'selected' if filters.availability == 'actively_looking' else '' }}" onclick="setChip('availability','actively_looking',this)">Actively looking</button>
+          <button type="button" class="chip {{ 'selected' if filters.availability == 'open' else '' }}" onclick="setChip('availability','open',this)">Open to offers</button>
+          <button type="button" class="chip {{ 'selected' if not filters.availability else '' }}" onclick="setChip('availability','',this)">Any</button>
+        </div>
+        <input type="hidden" name="availability" id="availability-val" value="{{ filters.availability or '' }}">
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label">Minimum score</label>
+        <div class="filter-chips">
+          <button type="button" class="chip {{ 'selected' if filters.min_score == '90' else '' }}" onclick="setChip('min_score','90',this)">90%+</button>
+          <button type="button" class="chip {{ 'selected' if filters.min_score == '75' else '' }}" onclick="setChip('min_score','75',this)">75%+</button>
+          <button type="button" class="chip {{ 'selected' if filters.min_score == '60' else '' }}" onclick="setChip('min_score','60',this)">60%+</button>
+          <button type="button" class="chip {{ 'selected' if not filters.min_score else '' }}" onclick="setChip('min_score','',this)">Any</button>
+        </div>
+        <input type="hidden" name="min_score" id="min_score-val" value="{{ filters.min_score or '' }}">
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label">Location</label>
+        <input class="filter-input" type="text" name="location" placeholder="City or state..." value="{{ filters.location or '' }}">
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label">Notice period</label>
+        <select class="filter-select" name="notice">
+          <option value="">Any</option>
+          <option value="0" {{ 'selected' if filters.notice == '0' else '' }}>Immediate joiner</option>
+          <option value="30" {{ 'selected' if filters.notice == '30' else '' }}>Within 30 days</option>
+          <option value="60" {{ 'selected' if filters.notice == '60' else '' }}>Within 60 days</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn-apply">Apply filters</button>
+      <button type="button" class="btn-reset" onclick="window.location='/employer/candidates'">Reset</button>
+    </form>
+  </aside>
+
+  <!-- Main results -->
+  <main class="main">
+
+    {% if not is_subscribed %}
+    <div class="lock-banner">
+      <p>🔒 Subscribe to read interview answers and shortlist candidates with private notes.</p>
+      <a href="/#pricing" class="btn-lock-upgrade">Subscribe — ₹1,999/mo</a>
+    </div>
+    {% endif %}
+
+    <div class="results-header">
+      <div class="results-count">{{ total }} candidate{{ 's' if total != 1 else '' }} found</div>
+      <select class="sort-select" onchange="applySort(this.value)">
+        <option value="score" {{ 'selected' if sort == 'score' else '' }}>Sort: Highest score</option>
+        <option value="recent" {{ 'selected' if sort == 'recent' else '' }}>Sort: Most recent</option>
+        <option value="availability" {{ 'selected' if sort == 'availability' else '' }}>Sort: Availability</option>
+      </select>
+    </div>
+
+    {% if candidates %}
+    <div class="candidates-grid">
+      {% for c in candidates %}
+      <div class="cand-card" id="card-{{ c.user_id }}">
+
+        <div class="cand-avatar">{{ c.initials }}</div>
+
+        <div class="cand-body">
+          <div class="cand-name-row">
+            <span class="cand-name">{{ c.name }}</span>
+            {% if c.availability == 'actively_looking' %}
+            <span class="avail-badge active">🟢 Actively looking</span>
+            {% elif c.availability == 'open' %}
+            <span class="avail-badge open">🔵 Open to offers</span>
+            {% else %}
+            <span class="avail-badge not">⚪ Not looking</span>
+            {% endif %}
+          </div>
+          <div class="cand-role">
+            {{ c.profession }}{% if c.location %} · {{ c.location }}{% endif %}
+          </div>
+          <div class="cand-tags">
+            {% for b in c.badges %}<span class="cand-tag">{{ b }}</span>{% endfor %}
+          </div>
+          <div class="cand-scores">
+            <div class="score-item">
+              <div class="score-val">{{ c.best_score }}%</div>
+              <div class="score-lbl">Best score</div>
+            </div>
+            <div class="score-item">
+              <div class="score-val">{{ c.session_count }}</div>
+              <div class="score-lbl">Sessions</div>
+            </div>
+            {% if c.badge_count > 0 %}
+            <div class="score-item">
+              <div class="score-val">{{ c.badge_count }}</div>
+              <div class="score-lbl">Badges</div>
+            </div>
+            {% endif %}
+          </div>
+          {% if c.notice_period_days == 0 %}
+          <div class="notice-tag">⚡ Immediate joiner</div>
+          {% elif c.notice_period_days %}
+          <div class="notice-tag">📋 {{ c.notice_period_days }}-day notice</div>
+          {% endif %}
+          {% if c.available_from %}
+          <div class="notice-tag">📅 Available from {{ c.available_from }}</div>
+          {% endif %}
+        </div>
+
+        <div class="cand-actions">
+          <a href="/p/{{ c.slug }}" class="btn-action btn-view" target="_blank">View profile</a>
+          {% if is_subscribed %}
+          <button class="btn-action btn-shortlist {{ 'shortlisted' if c.is_shortlisted else '' }}"
+            onclick="toggleShortlist('{{ c.user_id }}', this)">
+            {{ '⭐ Shortlisted' if c.is_shortlisted else '☆ Shortlist' }}
+          </button>
+          <button class="btn-action btn-note" onclick="openNote('{{ c.user_id }}', '{{ c.name }}')">
+            💬 Note{% if c.has_note %} ✓{% endif %}
+          </button>
+          {% else %}
+          <button class="btn-action btn-shortlist" onclick="window.location='/#pricing'" title="Subscribe to shortlist">
+            🔒 Shortlist
+          </button>
+          {% endif %}
+        </div>
+
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if total_pages > 1 %}
+    <div class="pagination">
+      {% if page > 1 %}
+      <a href="?{{ query_string }}&page={{ page - 1 }}" class="page-btn">← Prev</a>
+      {% endif %}
+      {% for p in range(1, total_pages + 1) %}
+      <a href="?{{ query_string }}&page={{ p }}" class="page-btn {{ 'active' if p == page else '' }}">{{ p }}</a>
+      {% endfor %}
+      {% if page < total_pages %}
+      <a href="?{{ query_string }}&page={{ page + 1 }}" class="page-btn">Next →</a>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="empty">
+      <h3>No candidates found</h3>
+      <p>Try adjusting your filters or check back as more candidates join.</p>
+    </div>
+    {% endif %}
+
+  </main>
+</div>
+
+<!-- Note modal -->
+<div class="modal-bg" id="note-modal">
+  <div class="modal">
+    <h3>Add a private note</h3>
+    <p id="note-modal-desc">Your note about this candidate. Only you can see this.</p>
+    <textarea id="note-text" placeholder="e.g. Strong CA answers, good communication. Follow up next week..."></textarea>
+    <div class="modal-btns">
+      <button class="btn-modal-cancel" onclick="closeNote()">Cancel</button>
+      <button class="btn-modal-save" onclick="saveNote()">Save note</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentNoteUserId = null;
+
+function setChip(field, value, el) {
+  document.getElementById(field + '-val').value = value;
+  el.closest('.filter-chips').querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function applySort(val) {
+  const url = new URL(window.location);
+  url.searchParams.set('sort', val);
+  window.location = url.toString();
+}
+
+async function toggleShortlist(userId, btn) {
+  const isShortlisted = btn.classList.contains('shortlisted');
+  btn.disabled = true;
+  try {
+    const res = await fetch('/employer/action', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        candidate_id: userId,
+        action: isShortlisted ? 'unshortlist' : 'shortlist'
+      })
+    });
+    if (res.ok) {
+      btn.classList.toggle('shortlisted');
+      btn.textContent = isShortlisted ? '☆ Shortlist' : '⭐ Shortlisted';
+    }
+  } catch(e) { console.error(e); }
+  btn.disabled = false;
+}
+
+function openNote(userId, name) {
+  currentNoteUserId = userId;
+  document.getElementById('note-modal-desc').textContent = `Private note about ${name}. Only you can see this.`;
+  document.getElementById('note-text').value = '';
+  // Load existing note
+  fetch('/employer/note/' + userId)
+    .then(r => r.json())
+    .then(d => { if (d.note) document.getElementById('note-text').value = d.note; });
+  document.getElementById('note-modal').classList.add('show');
+  setTimeout(() => document.getElementById('note-text').focus(), 100);
+}
+
+function closeNote() {
+  document.getElementById('note-modal').classList.remove('show');
+  currentNoteUserId = null;
+}
+
+async function saveNote() {
+  const text = document.getElementById('note-text').value.trim();
+  if (!currentNoteUserId) return;
+  try {
+    await fetch('/employer/action', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        candidate_id: currentNoteUserId,
+        action: 'note',
+        note: text
+      })
+    });
+    closeNote();
+  } catch(e) { console.error(e); }
+}
+
+document.getElementById('note-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeNote();
+});
+</script>
+</body>
+</html>
