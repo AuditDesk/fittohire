@@ -246,6 +246,13 @@
       <div class="action-title">Post a job</div>
       <div class="action-desc">{{ 'Free with your subscription — up to 30 active posts.' if is_subscribed else 'Post a job for ₹499, active for 30 days.' }}</div>
     </a>
+    {% if is_subscribed %}
+    <a href="/employer/analytics" class="action-card">
+      <div class="action-icon">📊</div>
+      <div class="action-title">Analytics</div>
+      <div class="action-desc">View your candidate pipeline, score distribution and hiring activity.</div>
+    </a>
+    {% endif %}
   </div>
 
   <div class="two-col">
