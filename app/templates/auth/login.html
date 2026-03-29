@@ -5,8 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sign in — FitToHire</title>
   <style>
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@900&display=swap');
-  .fth-logo { display:inline-flex; align-items:center; gap:10px; text-decoration:none; }
+.fth-logo { display:inline-flex; align-items:center; gap:10px; text-decoration:none; }
   .fth-logo-text { font-family:'Poppins','Arial Black',sans-serif; font-weight:900; font-size:22px; letter-spacing:-0.5px; line-height:1; filter:drop-shadow(1px 2px 3px rgba(0,0,0,0.22)); display:inline-flex; }
   .fth-logo-text .f { color:#DC2626; -webkit-text-stroke:0.5px #7f0000; text-shadow:1px 1px 0 #7f0000; }
   .fth-logo-text .t { color:#EAB308; -webkit-text-stroke:0.5px #713f12; text-shadow:1px 1px 0 #713f12; }
@@ -51,16 +50,6 @@
       gap: 10px;
       margin-bottom: 2rem;
     }
-    .logo-mark {
-      width: 36px; height: 36px;
-      background: var(--green);
-      border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .logo-mark svg { width: 20px; height: 20px; fill: white; }
-    .logo-text { font-size: 18px; font-weight: 600; color: var(--text); }
-    .logo-text span { color: unset; }
-
     h1 {
       font-size: 22px;
       font-weight: 600;
@@ -227,16 +216,38 @@
     .brand-fit  { color: #DC2626 !important; font-weight: 800; }
     .brand-to   { color: #EAB308 !important; font-weight: 800; }
     .brand-hire { color: #16A34A !important; font-weight: 800; }
-  </style>
+  
+@media (max-width: 600px) {
+  .card-wrap { padding: 1rem; }
+  .card { padding: 1.5rem 1.25rem; border-radius: 16px; }
+  .role-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .role-btn { padding: 12px 8px; font-size: 13px; }
+  .role-icon { font-size: 20px; }
+}
+
+</style>
 </head>
 <body>
 
 <div class="card">
   <div class="logo">
-    <div class="logo-mark">
-      <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" stroke="white" stroke-width="2" fill="none"/></svg>
-    </div>
-    <span class="logo-text"><span class="brand-fit">Fit</span><span class="brand-to">To</span><span class="brand-hire">Hire</span></span>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:24px;">
+      <svg width="40" height="40" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="rL" cx="38%" cy="30%" r="62%"><stop offset="0%" stop-color="#ff8080"/><stop offset="38%" stop-color="#DC2626"/><stop offset="100%" stop-color="#6b0000"/></radialGradient>
+          <radialGradient id="aL" cx="38%" cy="30%" r="62%"><stop offset="0%" stop-color="#fef08a"/><stop offset="38%" stop-color="#EAB308"/><stop offset="100%" stop-color="#4a2800"/></radialGradient>
+          <radialGradient id="gL" cx="38%" cy="30%" r="62%"><stop offset="0%" stop-color="#86efac"/><stop offset="38%" stop-color="#16A34A"/><stop offset="100%" stop-color="#022c16"/></radialGradient>
+        </defs>
+        <rect x="4" y="4" width="248" height="248" rx="52" fill="#1a1a1a"/>
+        <rect x="28" y="28" width="200" height="200" rx="28" fill="#0d0d0d"/>
+        <circle cx="128" cy="74" r="46" fill="url(#rL)"/><circle cx="128" cy="74" r="23" fill="#ff6060" opacity="0.35"/><circle cx="128" cy="74" r="9" fill="white" opacity="0.72"/>
+        <circle cx="128" cy="128" r="46" fill="url(#aL)"/><circle cx="128" cy="128" r="23" fill="#fde047" opacity="0.35"/><circle cx="128" cy="128" r="9" fill="white" opacity="0.72"/>
+        <circle cx="128" cy="182" r="46" fill="url(#gL)"/><circle cx="128" cy="182" r="23" fill="#4ade80" opacity="0.35"/><circle cx="128" cy="182" r="9" fill="white" opacity="0.72"/>
+      </svg>
+      <span style="font-family:-apple-system,'Segoe UI',system-ui,'Arial Black',Arial,sans-serif;font-weight:800;font-size:26px;letter-spacing:-0.5px;display:inline-flex;">
+        <span style="color:#DC2626">Fit</span><span style="color:#EAB308">To</span><span style="color:#16A34A">Hire</span>
+      </span>
+    </div><span class="brand-to">To</span><span class="brand-hire">Hire</span></span>
   </div>
 
   <!-- Form section -->
