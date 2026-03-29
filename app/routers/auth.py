@@ -17,7 +17,7 @@ from jinja2 import Environment, FileSystemLoader
 from pathlib import Path
 from typing import Optional
 
-from fastapi import APIRouter, Request, Response, HTTPException, Depends
+from fastapi import APIRouter, BackgroundTasks, Request, Response, HTTPException, Depends
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, EmailStr
@@ -175,7 +175,7 @@ async def auth_callback(
 
 
 
-async def send_welcome_email(email: str, role: str, supabase):
+def send_welcome_email(email: str, role: str, supabase):
     """Send welcome email on first login using Supabase Auth email."""
     try:
         # Load the correct template
@@ -221,7 +221,7 @@ async def send_welcome_email(email: str, role: str, supabase):
 
 
 @router.post("/set-session")
-async def set_session(request: Request, response: Response):
+async def set_session(request: Request, response: Response, background_tasks: BackgroundTasks = None):
     """
     Frontend extracts access_token + refresh_token from URL fragment
     and POSTs them here. We set them as HttpOnly cookies.
@@ -255,10 +255,9 @@ async def set_session(request: Request, response: Response):
         }, on_conflict="id").execute()
 
         # Send welcome email on first login (non-blocking)
-        if is_first_login:
-            import asyncio
-            asyncio.create_task(
-                send_welcome_email(user_resp.user.email, role, supabase)
+        if is_first_login and background_tasks:
+            background_tasks.add_task(
+                send_welcome_email, user_resp.user.email, role, supabase
             )
 
     except HTTPException:
