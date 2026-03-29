@@ -1,45 +1,129 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Privacy Policy — FitToHire</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root { --ink: #0D0D0D; --muted: #6B6B6B; --line: #E8E8E4; --cream: #F9F8F4; --accent: #1A6BFF; }
-body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); }
-nav { padding: 18px 48px; border-bottom: 1px solid var(--line); background: white; display: flex; justify-content: space-between; align-items: center; }
-.logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; text-decoration: none; color: var(--ink); }
-.logo span { color: var(--accent); }
-.content { max-width: 760px; margin: 60px auto; padding: 0 24px 80px; }
-h1 { font-family: 'Syne', sans-serif; font-size: 36px; font-weight: 800; letter-spacing: -1px; margin-bottom: 8px; }
-.date { font-size: 13px; color: var(--muted); margin-bottom: 40px; }
-h2 { font-size: 18px; font-weight: 600; margin: 32px 0 12px; }
-p { font-size: 15px; color: #3A3A3A; line-height: 1.8; margin-bottom: 16px; }
-a { color: var(--accent); }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy — FitToHire</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --border:#E5E7EB; --text:#111827; --muted:#6B7280; --white:#fff; --cream:#F9FAFB; --green:#16A34A; }
+    body { font-family:-apple-system,'Segoe UI',system-ui,Arial,sans-serif; background:var(--cream); color:var(--text); min-height:100vh; }
+    .brand-fit{color:#DC2626!important;font-weight:800}
+    .brand-to{color:#EAB308!important;font-weight:800}
+    .brand-hire{color:#16A34A!important;font-weight:800}
+    nav { background:var(--white); border-bottom:1px solid var(--border); padding:0 2rem; height:56px; display:flex; align-items:center; justify-content:space-between; }
+    .nav-logo { display:inline-flex; align-items:center; gap:9px; text-decoration:none; }
+    .nav-logo-text { font-family:-apple-system,'Segoe UI',system-ui,'Arial Black',Arial,sans-serif; font-weight:800; font-size:22px; letter-spacing:-0.5px; display:inline-flex; }
+    .nav-back { font-size:13px; color:var(--muted); text-decoration:none; }
+    .nav-back:hover { color:var(--text); }
+    .page { max-width:760px; margin:0 auto; padding:3rem 2rem 5rem; }
+    .page-title { font-size:28px; font-weight:700; margin-bottom:6px; }
+    .page-date { font-size:13px; color:var(--muted); margin-bottom:2.5rem; }
+    h2 { font-size:17px; font-weight:600; margin:2rem 0 10px; color:var(--text); }
+    p { font-size:15px; color:#374151; line-height:1.8; margin-bottom:12px; }
+    ul { font-size:15px; color:#374151; line-height:1.8; margin:0 0 12px 1.5rem; }
+    li { margin-bottom:6px; }
+    a { color:var(--green); }
+    .contact-box { background:var(--white); border:1px solid var(--border); border-radius:12px; padding:20px 24px; margin-top:2rem; }
+    .contact-box p { margin:0; }
+    @media(max-width:600px){ nav{padding:0 1rem;} .page{padding:2rem 1rem 4rem;} .nav-logo-text{font-size:18px!important;} }
+  </style>
 </head>
 <body>
-<nav><a href="/" class="logo">Fit<span>To</span>Hire</a><a href="/" style="font-size:14px;color:#6B6B6B;text-decoration:none;">← Back to Home</a></nav>
-<div class="content">
-<h1>Privacy Policy</h1>
-<p class="date">Effective Date: March 25, 2026</p>
-<p>FitToHire ("we", "our", "us") operates fittohire.in. This policy explains how we collect, use, and protect your information.</p>
-<h2>Information We Collect</h2>
-<p>We collect information you provide directly: name, email address, profession, resume, certificates, and interview session data. We also collect usage data such as session scores, badges earned, and login activity.</p>
-<h2>How We Use Your Information</h2>
-<p>We use your information to provide the FitToHire platform services — including mock interview sessions, AI scoring, badge awards, and your public proof profile. We do not sell your personal data to any third party.</p>
-<h2>Data Storage</h2>
-<p>Your data including uploaded resumes and certificates are stored securely using Supabase. Your data is preserved even if your subscription is paused, and is only deleted upon your explicit written request to auditdesk.hq@gmail.com.</p>
-<h2>Payments</h2>
-<p>All payments are processed by Razorpay. We do not store your card or payment details. Razorpay's privacy policy governs payment data handling.</p>
-<h2>Public Profile</h2>
-<p>Your proof profile page at fittohire.in/profile/[username] is publicly visible and indexed by search engines. You can toggle your visibility off at any time from your account settings.</p>
-<h2>Cookies</h2>
-<p>We use essential cookies for login sessions and platform functionality. We do not use advertising cookies or tracking pixels.</p>
-<h2>Contact</h2>
-<p>For any privacy concerns, email us at <a href="mailto:auditdesk.hq@gmail.com">auditdesk.hq@gmail.com</a>.</p>
+<nav>
+  <a href="/" class="nav-logo">
+    <svg width="32" height="32" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;display:block;">
+      <defs>
+        <radialGradient id="r1" cx="38%" cy="30%" r="62%"><stop offset="0%" stop-color="#ff8080"/><stop offset="38%" stop-color="#DC2626"/><stop offset="100%" stop-color="#6b0000"/></radialGradient>
+        <radialGradient id="a1" cx="38%" cy="30%" r="62%"><stop offset="0%" stop-color="#fef08a"/><stop offset="38%" stop-color="#EAB308"/><stop offset="100%" stop-color="#4a2800"/></radialGradient>
+        <radialGradient id="g1" cx="38%" cy="30%" r="62%"><stop offset="0%" stop-color="#86efac"/><stop offset="38%" stop-color="#16A34A"/><stop offset="100%" stop-color="#022c16"/></radialGradient>
+      </defs>
+      <rect x="4" y="4" width="248" height="248" rx="52" fill="#1a1a1a"/>
+      <rect x="28" y="28" width="200" height="200" rx="28" fill="#0d0d0d"/>
+      <circle cx="128" cy="74" r="46" fill="url(#r1)"/><circle cx="128" cy="74" r="23" fill="#ff6060" opacity="0.35"/><circle cx="128" cy="74" r="9" fill="white" opacity="0.72"/>
+      <circle cx="128" cy="128" r="46" fill="url(#a1)"/><circle cx="128" cy="128" r="23" fill="#fde047" opacity="0.35"/><circle cx="128" cy="128" r="9" fill="white" opacity="0.72"/>
+      <circle cx="128" cy="182" r="46" fill="url(#g1)"/><circle cx="128" cy="182" r="23" fill="#4ade80" opacity="0.35"/><circle cx="128" cy="182" r="9" fill="white" opacity="0.72"/>
+    </svg>
+    <span class="nav-logo-text"><span class="brand-fit">Fit</span><span class="brand-to">To</span><span class="brand-hire">Hire</span></span>
+  </a>
+  <a href="/" class="nav-back">← Back to home</a>
+</nav>
+
+<div class="page">
+  <div class="page-title">Privacy Policy</div>
+  <div class="page-date">Last updated: 29 March 2026</div>
+
+  <p>FitToHire ("we", "us", "our") is operated by Audit Desk (auditdesk.hq@gmail.com). This Privacy Policy explains how we collect, use, and protect your personal information when you use fittohire.in.</p>
+  <p>By using FitToHire, you agree to the collection and use of information as described in this policy.</p>
+
+  <h2>1. Information we collect</h2>
+  <p>We collect the following information when you use FitToHire:</p>
+  <ul>
+    <li><strong>Email address</strong> — required to create your account and send your login link</li>
+    <li><strong>Full name and location</strong> — optional, added by you in your profile setup</li>
+    <li><strong>Interview responses</strong> — your text answers to mock interview questions</li>
+    <li><strong>AI-generated scores</strong> — scores and feedback generated from your responses</li>
+    <li><strong>Profile information</strong> — profession, availability status, bio, LinkedIn URL</li>
+    <li><strong>Payment information</strong> — processed securely by Razorpay; we do not store card details</li>
+    <li><strong>Usage data</strong> — pages visited, features used, session timestamps</li>
+  </ul>
+
+  <h2>2. How we use your information</h2>
+  <ul>
+    <li>To provide and operate the FitToHire platform</li>
+    <li>To generate AI-scored interview assessments and certificates</li>
+    <li>To display your public proof profile to employers (only if you opt in)</li>
+    <li>To send you login links and transactional emails</li>
+    <li>To send welcome emails and platform updates</li>
+    <li>To process subscription payments via Razorpay</li>
+    <li>To improve our AI scoring models and platform features</li>
+  </ul>
+
+  <h2>3. Who can see your information</h2>
+  <p><strong>Your public profile</strong> — if you set your profile to public, your name, profession, location, scores and badges are visible to anyone including employers. Your email is only shown if you explicitly enable contact visibility in your profile settings.</p>
+  <p><strong>Subscribed employers</strong> — employers with an active subscription can read your interview answers if your profile is public. You can set your profile to private at any time in your profile settings.</p>
+  <p><strong>We do not sell your data</strong> to any third party under our current model.</p>
+
+  <h2>4. Data storage and security</h2>
+  <p>Your data is stored securely using Supabase (hosted on AWS in the Asia-Pacific region). We use row-level security to ensure users can only access their own data. Passwords are never stored — we use magic link authentication only.</p>
+  <p>Payment transactions are processed by Razorpay and governed by their security standards. We do not store any card or UPI credentials.</p>
+
+  <h2>5. Cookies and tracking</h2>
+  <p>We use HTTP-only session cookies to keep you logged in. We do not use advertising cookies or third-party tracking scripts. We do not use Google Analytics or any similar tracking service.</p>
+
+  <h2>6. Data retention</h2>
+  <p>We retain your data for as long as your account is active. If you wish to delete your account and all associated data, please email us at auditdesk.hq@gmail.com and we will process your request within 7 business days.</p>
+
+  <h2>7. Your rights</h2>
+  <p>You have the right to:</p>
+  <ul>
+    <li>Access the personal data we hold about you</li>
+    <li>Correct inaccurate data in your profile</li>
+    <li>Request deletion of your account and data</li>
+    <li>Set your profile to private at any time</li>
+    <li>Opt out of contact visibility so employers cannot see your email</li>
+  </ul>
+
+  <h2>8. Third-party services</h2>
+  <p>We use the following third-party services:</p>
+  <ul>
+    <li><strong>Supabase</strong> — database and authentication</li>
+    <li><strong>Razorpay</strong> — payment processing</li>
+    <li><strong>Anthropic Claude API</strong> — AI interview question generation and scoring</li>
+    <li><strong>Railway</strong> — application hosting</li>
+    <li><strong>Cloudflare</strong> — domain and security</li>
+  </ul>
+  <p>Each of these services has their own privacy policy. We share only the minimum data necessary for each service to function.</p>
+
+  <h2>9. Children's privacy</h2>
+  <p>FitToHire is intended for users aged 18 and above. We do not knowingly collect personal information from anyone under 18. If you believe a minor has provided us with personal information, please contact us immediately.</p>
+
+  <h2>10. Changes to this policy</h2>
+  <p>We may update this Privacy Policy from time to time. We will notify registered users of significant changes by email. Continued use of FitToHire after changes constitutes acceptance of the updated policy.</p>
+
+  <div class="contact-box">
+    <p><strong>Questions about this policy?</strong> Contact us at <a href="mailto:auditdesk.hq@gmail.com">auditdesk.hq@gmail.com</a></p>
+  </div>
 </div>
 </body>
 </html>
