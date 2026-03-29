@@ -6,12 +6,14 @@ import os
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-from app.routers import auth, payments, dashboard, interview, profile
+from app.routers import auth, payments, dashboard, interview, profile, employer, certificate
 app.include_router(auth.router)
 app.include_router(payments.router)
 app.include_router(dashboard.router)
 app.include_router(interview.router)
 app.include_router(profile.router)
+app.include_router(employer.router)
+app.include_router(certificate.router)
 
 @app.get("/")
 async def home():
