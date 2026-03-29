@@ -13,6 +13,8 @@ Flow:
 import os
 import logging
 from pathlib import Path
+from jinja2 import Environment, FileSystemLoader
+from pathlib import Path
 from typing import Optional
 
 from fastapi import APIRouter, Request, Response, HTTPException, Depends
@@ -172,6 +174,52 @@ async def auth_callback(
     )
 
 
+
+async def send_welcome_email(email: str, role: str, supabase):
+    """Send welcome email on first login using Supabase Auth email."""
+    try:
+        # Load the correct template
+        template_dir = Path(__file__).resolve().parent.parent / "templates" / "emails"
+        env = Environment(loader=FileSystemLoader(str(template_dir)))
+
+        if role == "employer":
+            template = env.get_template("welcome_employer.html")
+            subject = "Welcome to FitToHire — Find candidates who have already proved themselves"
+        else:
+            template = env.get_template("welcome_jobseeker.html")
+            subject = "Welcome to FitToHire — Let's get you hired"
+
+        html_content = template.render()
+
+        # Send via Gmail SMTP
+        import smtplib
+        from email.mime.multipart import MIMEMultipart
+        from email.mime.text import MIMEText
+
+        gmail_user = os.getenv("GMAIL_USER", "auditdesk.hq@gmail.com")
+        gmail_pass = os.getenv("GMAIL_APP_PASSWORD")  # Gmail App Password from Railway env
+
+        if not gmail_pass:
+            logger.warning("GMAIL_APP_PASSWORD not set — welcome email skipped")
+            return
+
+        msg = MIMEMultipart("alternative")
+        msg["Subject"] = subject
+        msg["From"]    = f"FitToHire <{gmail_user}>"
+        msg["To"]      = email
+        msg.attach(MIMEText(html_content, "html"))
+
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+            server.login(gmail_user, gmail_pass)
+            server.sendmail(gmail_user, email, msg.as_string())
+
+        logger.info(f"Welcome email sent to {email} (role={role})")
+
+    except Exception as e:
+        # Never block login because of email failure
+        logger.error(f"Welcome email error for {email}: {e}")
+
+
 @router.post("/set-session")
 async def set_session(request: Request, response: Response):
     """
@@ -195,12 +243,23 @@ async def set_session(request: Request, response: Response):
 
         user_id = user_resp.user.id
 
+        # Check if this is a first login
+        existing = supabase.table("users")             .select("id, role")             .eq("id", user_id)             .limit(1).execute()
+        is_first_login = not existing.data
+
         # Upsert user profile into our users table
         supabase.table("users").upsert({
             "id":    user_id,
             "email": user_resp.user.email,
             "role":  role,
         }, on_conflict="id").execute()
+
+        # Send welcome email on first login (non-blocking)
+        if is_first_login:
+            import asyncio
+            asyncio.create_task(
+                send_welcome_email(user_resp.user.email, role, supabase)
+            )
 
     except HTTPException:
         raise
