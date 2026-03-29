@@ -6,10 +6,10 @@
   <title>Dashboard — FitToHire</title>
   <style>
 .fth-logo { display:inline-flex; align-items:center; gap:10px; text-decoration:none; }
-  .fth-logo-text { font-family:'Poppins','Arial Black',sans-serif; font-weight:900; font-size:22px; letter-spacing:-0.5px; line-height:1; filter:drop-shadow(1px 2px 3px rgba(0,0,0,0.22)); display:inline-flex; }
-  .fth-logo-text .f { color:#DC2626; -webkit-text-stroke:0.5px #7f0000; text-shadow:1px 1px 0 #7f0000; }
-  .fth-logo-text .t { color:#EAB308; -webkit-text-stroke:0.5px #713f12; text-shadow:1px 1px 0 #713f12; }
-  .fth-logo-text .h { color:#16A34A; -webkit-text-stroke:0.5px #052e16; text-shadow:1px 1px 0 #052e16; }
+  .fth-logo-text { font-family:-apple-system,'Segoe UI',system-ui,'Arial Black',Arial,sans-serif; font-weight:800; font-size:22px; letter-spacing:-0.5px; line-height:1; display:inline-flex; }
+  .fth-logo-text .f { color:#DC2626 !important; }
+  .fth-logo-text .t { color:#EAB308 !important; }
+  .fth-logo-text .h { color:#16A34A !important; }
 
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     :root{
@@ -102,12 +102,50 @@
   .nav-user { font-size: 12px; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 }
 
+
+    .notif-section { margin-bottom: 1.5rem; }
+    .notif-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 12px; }
+    .notif-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+    .notif-row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+    .notif-row:last-child { border-bottom: none; }
+    .notif-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+    .notif-icon.shortlist { background: #FEF3C7; }
+    .notif-icon.like { background: var(--green-mid); }
+    .notif-text { flex: 1; font-size: 14px; color: var(--text); }
+    .notif-when { font-size: 12px; color: var(--muted); }
+    .view-count-box { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .view-count-num { font-size: 22px; font-weight: 700; color: var(--text); }
+    .view-count-lbl { font-size: 13px; color: var(--muted); }
+    .annual-nudge { background: linear-gradient(135deg, #1e2130, #2d3148); border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .annual-nudge p { font-size: 13px; color: rgba(255,255,255,0.7); }
+    .annual-nudge a { background: var(--amber); color: #1a1a1a; padding: 7px 16px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 600; white-space: nowrap; }
+
+  
+  .notif-section { margin-bottom: 1.5rem; }
+  .notif-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 12px; }
+  .notif-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+  .notif-row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+  .notif-row:last-child { border-bottom: none; }
+  .notif-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+  .notif-icon.shortlist { background: #FEF3C7; }
+  .notif-icon.like { background: #DCFCE7; }
+  .notif-text { flex: 1; font-size: 14px; color: var(--text); }
+  .notif-when { font-size: 12px; color: var(--muted); }
+  .view-count-box { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .view-count-num { font-size: 22px; font-weight: 700; color: var(--text); }
+  .view-count-lbl { font-size: 13px; color: var(--muted); 
+  nav { padding: 0 1rem; }
+  .nav-email { display: none; }
+  .fth-logo-text { font-size: 18px !important; }
+  .annual-nudge { flex-direction: column; gap: 10px; }
+  .annual-nudge a { width: 100%; text-align: center; }
+  .view-count-box { flex-direction: column; gap: 4px; }
+}
 </style>
 </head>
 <body>
 <nav>
-  <a href="/" class="logo">
-    <a href="/" class="fth-logo"><svg width="32" height="32" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;display:block;">
+  <a href="/" class="fth-logo"><svg width="32" height="32" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;display:block;">
   <defs>
     <radialGradient id="rS" cx="38%" cy="30%" r="62%"><stop offset="0%" stop-color="#ff8080"/><stop offset="38%" stop-color="#DC2626"/><stop offset="100%" stop-color="#6b0000"/></radialGradient>
     <radialGradient id="aS" cx="38%" cy="30%" r="62%"><stop offset="0%" stop-color="#fef08a"/><stop offset="38%" stop-color="#EAB308"/><stop offset="100%" stop-color="#4a2800"/></radialGradient>
@@ -119,7 +157,6 @@
   <circle cx="128" cy="128" r="46" fill="url(#aS)"/><circle cx="128" cy="128" r="23" fill="#fde047" opacity="0.35"/><circle cx="128" cy="128" r="9" fill="white" opacity="0.72"/>
   <circle cx="128" cy="182" r="46" fill="url(#gS)"/><circle cx="128" cy="182" r="23" fill="#4ade80" opacity="0.35"/><circle cx="128" cy="182" r="9" fill="white" opacity="0.72"/>
 </svg><span class="fth-logo-text"><span class="f">Fit</span><span class="t">To</span><span class="h">Hire</span></span></a>
-  </a>
   <div class="nav-r">
     <span class="nav-email">{{ user.email }}</span>
     <a href="/auth/logout" class="nav-out">Sign out</a>
@@ -165,7 +202,37 @@
   </div>
 
   <div class="sh">
-    <h2>Recent sessions</h2>
+    <h2>
+  <!-- Employer interest notifications -->
+  {% if employer_notifications %}
+  <div class="notif-section">
+    <div class="notif-title">Employer interest <span style="font-size:12px;color:var(--muted);font-weight:400">(annual subscribers only)</span></div>
+    <div class="view-count-box">
+      <div>
+        <div class="view-count-num">{{ view_count }}</div>
+        <div class="view-count-lbl">employer interactions on your profile</div>
+      </div>
+    </div>
+    <div class="notif-card">
+      {% for n in employer_notifications %}
+      <div class="notif-row">
+        <div class="notif-icon {{ 'shortlist' if n.action == 'shortlist' else 'like' }}">
+          {{ '⭐' if n.action == 'shortlist' else '👍' }}
+        </div>
+        <div class="notif-text">{{ n.text }}</div>
+        <div class="notif-when">{{ n.when }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% elif view_count > 0 %}
+  <div class="annual-nudge">
+    <p>⭐ {{ view_count }} employer{{ 's' if view_count != 1 else '' }} interacted with your profile. Upgrade to Annual to see who.</p>
+    <a href="/#pricing">Upgrade to Annual</a>
+  </div>
+  {% endif %}
+
+  Recent sessions</h2>
     {% if sessions %}<a href="/sessions">View all</a>{% endif %}
   </div>
 
